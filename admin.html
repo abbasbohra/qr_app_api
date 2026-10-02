@@ -1,0 +1,3559 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>Admin · TapCard</title>
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ══════════════════════════════════════════════
+         DESIGN TOKENS
+         ══════════════════════════════════════════════ */
+      :root {
+        --bg: #f5f7fb;
+        --surface: #ffffff;
+        --surface-2: #f8fafc;
+        --text: #0f172a;
+        --text-2: #334155;
+        --muted: #64748b;
+        --muted-2: #94a3b8;
+        --border: #e8ecf3;
+        --border-2: #dde3ec;
+
+        --primary: #2563eb;
+        --primary-hover: #1d4ed8;
+        --primary-soft: #dbeafe;
+
+        --success: #16a34a;
+        --success-soft: #dcfce7;
+        --warning: #f59e0b;
+        --warning-soft: #fef3c7;
+        --danger: #dc2626;
+        --danger-soft: #fee2e2;
+        --purple: #7c3aed;
+        --purple-soft: #ede9fe;
+
+        --sidebar-w: 260px;
+        --header-h: 64px;
+
+        --radius-sm: 8px;
+        --radius: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 20px;
+
+        --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+        --shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+        --shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        font-size: 14px;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      button,
+      input,
+      select,
+      textarea {
+        font-family: inherit;
+      }
+
+      /* ══════════════════════════════════════════════
+         SPLASH
+         ══════════════════════════════════════════════ */
+      .splash {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+        background: linear-gradient(135deg, #eef2ff 0%, #f5f7fb 100%);
+      }
+      .splashInner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+      .splashLogo {
+        width: 72px;
+        height: 72px;
+        border-radius: 20px;
+        object-fit: contain;
+        box-shadow: 0 12px 32px rgba(37, 99, 235, 0.18);
+        animation: pulse 2s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.05);
+          opacity: 0.85;
+        }
+      }
+      .spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid #e2e8f0;
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .splashText {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      /* ══════════════════════════════════════════════
+         LOGIN
+         ══════════════════════════════════════════════ */
+      .login {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+        background:
+          radial-gradient(800px 400px at 80% -10%, #dbeafe 0%, transparent 60%),
+          radial-gradient(600px 400px at 0% 100%, #ede9fe 0%, transparent 60%),
+          linear-gradient(135deg, #f5f7fb 0%, #eef2ff 100%);
+      }
+      .loginCard {
+        background: var(--surface);
+        padding: 40px;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-lg);
+        max-width: 400px;
+        width: 100%;
+        border: 1px solid var(--border);
+      }
+      .loginLogo {
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        object-fit: contain;
+        margin-bottom: 20px;
+        display: block;
+      }
+      .loginCard h1 {
+        font-size: 24px;
+        font-weight: 800;
+        margin-bottom: 6px;
+        letter-spacing: -0.02em;
+      }
+      .loginCard p {
+        color: var(--muted);
+        margin-bottom: 24px;
+        font-size: 14px;
+      }
+      .loginCard input {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 14px 16px;
+        font-size: 15px;
+        background: var(--surface-2);
+        margin-bottom: 12px;
+        transition: all 0.15s;
+      }
+      .loginCard input:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: var(--surface);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+      }
+      .loginCard button {
+        width: 100%;
+        background: var(--primary);
+        color: #fff;
+        border: none;
+        padding: 16px;
+        border-radius: var(--radius);
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.15s;
+        margin-top: 8px;
+      }
+      .loginCard button:hover:not(:disabled) {
+        background: var(--primary-hover);
+      }
+      .loginCard button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .error {
+        color: var(--danger);
+        font-size: 13px;
+        margin-top: 12px;
+        text-align: center;
+      }
+
+      /* ══════════════════════════════════════════════
+         APP LAYOUT
+         ══════════════════════════════════════════════ */
+      .app {
+        display: none;
+      }
+      .app.visible {
+        display: block;
+      }
+
+      /* ── SIDEBAR ─────────────────────────────── */
+      .sidebar {
+        width: var(--sidebar-w);
+        background: #0b1220;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 40;
+        transition: transform 0.25s ease;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+      }
+      .sidebar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .sidebar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+      }
+
+      .sidebarHeader {
+        padding: 20px 20px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .sidebarLogo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .sidebarLogoIcon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        object-fit: contain;
+        flex-shrink: 0;
+        background: #fff;
+        padding: 2px;
+      }
+      .sidebarLogoText {
+        font-weight: 800;
+        font-size: 15px;
+        letter-spacing: -0.02em;
+      }
+      .sidebarLogoSub {
+        font-size: 11px;
+        color: var(--muted-2);
+        font-weight: 500;
+        margin-top: 2px;
+      }
+
+      .nav {
+        flex: 1;
+        padding: 12px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .navGroupLabel {
+        font-size: 10px;
+        font-weight: 800;
+        color: #475569;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        padding: 16px 12px 6px;
+      }
+      .navItem {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        color: #94a3b8;
+        font-weight: 500;
+        font-size: 13.5px;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        width: 100%;
+        text-align: left;
+        transition:
+          background 0.15s,
+          color 0.15s;
+        position: relative;
+      }
+      .navItem:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+      }
+      .navItem.active {
+        background: var(--primary);
+        color: #fff;
+        font-weight: 600;
+      }
+      .navItem.active:hover {
+        background: var(--primary);
+      }
+      .navIcon {
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .navLabel {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .navBadge {
+        font-size: 10px;
+        font-weight: 800;
+        padding: 2px 6px;
+        border-radius: 999px;
+        background: var(--danger);
+        color: #fff;
+        min-width: 18px;
+        text-align: center;
+      }
+
+      .sidebarBottom {
+        padding: 12px 12px 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .adminInfo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 10px;
+      }
+      .adminAvatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #2563eb, #0d9488);
+        color: #fff;
+        font-weight: 800;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .adminName {
+        color: #fff;
+        font-weight: 700;
+        font-size: 13px;
+        line-height: 1.2;
+      }
+      .adminRole {
+        color: var(--muted-2);
+        font-size: 11px;
+        margin-top: 2px;
+      }
+
+      /* ── OVERLAY (mobile) ────────────────────── */
+      .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(2px);
+        z-index: 35;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .overlay.visible {
+        display: block;
+        opacity: 1;
+      }
+
+      /* ── MOBILE TOPBAR ───────────────────────── */
+      .mobileHeader {
+        display: none;
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: saturate(180%) blur(12px);
+        -webkit-backdrop-filter: saturate(180%) blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 12px 16px;
+        padding-top: calc(12px + env(safe-area-inset-top));
+        align-items: center;
+        justify-content: space-between;
+      }
+      .mobileHeaderBrand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        font-size: 15px;
+      }
+      .mobileHeaderBrand img {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        object-fit: contain;
+      }
+      .menuBtn {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        color: var(--text);
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        cursor: pointer;
+      }
+
+      /* ── MAIN ────────────────────────────────── */
+      .main {
+        margin-left: var(--sidebar-w);
+        padding: 32px 40px;
+        min-height: 100vh;
+        padding-bottom: calc(60px + env(safe-area-inset-bottom));
+        max-width: 1600px;
+      }
+
+      /* ── PAGE HEADER ─────────────────────────── */
+      .pageHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 28px;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .pageHeader h1 {
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+      .pageHeader .sub {
+        color: var(--muted);
+        font-size: 14px;
+        margin-top: 4px;
+      }
+      .pageHeaderActions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      /* ── BUTTONS ─────────────────────────────── */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.15s;
+        font-family: inherit;
+        white-space: nowrap;
+        text-decoration: none;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .btn-primary {
+        background: var(--primary);
+        color: #fff;
+      }
+      .btn-primary:hover:not(:disabled) {
+        background: var(--primary-hover);
+        box-shadow: 0 8px 20px -6px rgba(37, 99, 235, 0.5);
+      }
+      .btn-ghost {
+        background: var(--surface);
+        color: var(--text-2);
+        border-color: var(--border);
+      }
+      .btn-ghost:hover:not(:disabled) {
+        border-color: var(--border-2);
+        background: var(--surface-2);
+      }
+      .btn-sm {
+        padding: 5px 10px;
+        font-size: 11.5px;
+        border-radius: 8px;
+      }
+      .btn-danger {
+        background: var(--danger-soft);
+        color: var(--danger);
+      }
+      .btn-danger:hover:not(:disabled) {
+        background: #fecaca;
+      }
+      .btn-success {
+        background: var(--success-soft);
+        color: var(--success);
+      }
+      .btn-success:hover:not(:disabled) {
+        background: #bbf7d0;
+      }
+      .btn-warning {
+        background: var(--warning-soft);
+        color: #92400e;
+      }
+      .btn-warning:hover:not(:disabled) {
+        background: #fde68a;
+      }
+      .btn-info {
+        background: var(--primary-soft);
+        color: #1e40af;
+      }
+      .btn-info:hover:not(:disabled) {
+        background: #bfdbfe;
+      }
+      .btn-purple {
+        background: var(--purple-soft);
+        color: var(--purple);
+      }
+      .btn-purple:hover:not(:disabled) {
+        background: #ddd6fe;
+      }
+
+      /* ── STATS ───────────────────────────────── */
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+      .stat {
+        background: var(--surface);
+        padding: 20px;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+        transition: box-shadow 0.15s;
+      }
+      .stat:hover {
+        box-shadow: var(--shadow);
+      }
+      .statIcon {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+      .stat .label {
+        color: var(--muted);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .stat .value {
+        font-size: 30px;
+        font-weight: 800;
+        color: var(--text);
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+
+      /* ── PANEL ───────────────────────────────── */
+      .panel {
+        background: var(--surface);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+        overflow: hidden;
+        margin-bottom: 24px;
+      }
+      .panelHeader {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .panelHeader h2 {
+        font-size: 16px;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+      }
+      .searchBox {
+        padding: 9px 14px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        font-size: 13.5px;
+        width: 260px;
+        background: var(--surface-2);
+        transition: all 0.15s;
+        max-width: 100%;
+      }
+      .searchBox:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: var(--surface);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+      }
+
+      /* ── TABLES ─────────────────────────────── */
+      .tableWrap {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 720px;
+      }
+      th,
+      td {
+        padding: 14px 24px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+        font-size: 13.5px;
+        vertical-align: middle;
+      }
+      th {
+        background: var(--surface-2);
+        color: var(--muted);
+        font-weight: 700;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      tr:hover td {
+        background: var(--surface-2);
+      }
+      td {
+        color: var(--text-2);
+      }
+
+      .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #2563eb, #0d9488);
+        color: #fff;
+        font-weight: 800;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        vertical-align: middle;
+        flex-shrink: 0;
+      }
+      .userCell {
+        display: flex;
+        align-items: center;
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      /* ── BADGES ─────────────────────────────── */
+      .badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 11px;
+        letter-spacing: 0.2px;
+      }
+      .badgeCredits {
+        background: var(--primary-soft);
+        color: #1e40af;
+      }
+      .badgeFree {
+        background: #f1f5f9;
+        color: #475569;
+      }
+      .badgePro {
+        background: var(--warning-soft);
+        color: #92400e;
+      }
+      .badgeActive {
+        background: var(--success-soft);
+        color: #166534;
+      }
+      .badgeSuspended {
+        background: var(--danger-soft);
+        color: #991b1b;
+      }
+
+      /* ── EMPTY / LOADING ────────────────────── */
+      .empty {
+        padding: 60px 20px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .loading {
+        padding: 40px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      /* ── MODAL ──────────────────────────────── */
+      .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.55);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        padding: 20px;
+        animation: fadeIn 0.15s ease;
+      }
+      .modal.open {
+        display: flex;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .modalBox {
+        background: var(--surface);
+        border-radius: var(--radius-xl);
+        padding: 28px;
+        max-width: 480px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: var(--shadow-lg);
+        animation: slideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .modalBox h3 {
+        font-size: 19px;
+        font-weight: 800;
+        margin-bottom: 4px;
+        letter-spacing: -0.01em;
+      }
+      .modalSub {
+        color: var(--muted);
+        font-size: 13px;
+        margin-bottom: 20px;
+      }
+
+      /* ── FIELDS ─────────────────────────────── */
+      .field {
+        margin-bottom: 14px;
+      }
+      .field label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: 6px;
+      }
+      .field input,
+      .field select,
+      .field textarea {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 14px;
+        background: var(--surface-2);
+        color: var(--text);
+        transition: all 0.15s;
+      }
+      .field input:focus,
+      .field select:focus,
+      .field textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: var(--surface);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+      }
+      .field textarea {
+        resize: vertical;
+        min-height: 90px;
+      }
+      .row2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .modalActions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .modalActions button {
+        flex: 1;
+        padding: 13px;
+        border-radius: 10px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.15s;
+      }
+      .modalCancel {
+        background: var(--surface-2);
+        color: var(--text-2);
+        border: 1px solid var(--border) !important;
+      }
+      .modalCancel:hover {
+        background: #f1f5f9;
+      }
+      .modalSave {
+        background: var(--primary);
+        color: #fff;
+      }
+      .modalSave:hover {
+        background: var(--primary-hover);
+      }
+
+      /* ── RESET PASSWORD ─────────────────────── */
+      .resetInfo {
+        background: var(--surface-2);
+        border-radius: var(--radius);
+        padding: 14px 16px;
+        margin-bottom: 16px;
+        border-left: 3px solid var(--primary);
+      }
+      .resetInfo .row {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        font-size: 13px;
+        gap: 12px;
+      }
+      .resetInfo .label {
+        color: var(--muted);
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        font-size: 10.5px;
+        flex-shrink: 0;
+      }
+      .resetInfo .value {
+        color: var(--text);
+        font-weight: 600;
+        word-break: break-all;
+        text-align: right;
+      }
+      .pwdRow {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .pwdRow input {
+        flex: 1;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-size: 15px;
+        background: var(--surface-2);
+        font-family: "SF Mono", "Monaco", "Consolas", monospace;
+        letter-spacing: 1px;
+        color: var(--text);
+      }
+      .pwdRow input:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: var(--surface);
+      }
+      .iconBtn {
+        width: 42px;
+        height: 42px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: var(--surface-2);
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s;
+        flex-shrink: 0;
+      }
+      .iconBtn:hover {
+        background: #e2e8f0;
+      }
+      .resetNote {
+        margin-top: 14px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        background: var(--warning-soft);
+        color: #92400e;
+        font-size: 12px;
+        line-height: 1.6;
+        border-left: 3px solid var(--warning);
+      }
+
+      /* ── TOAST ──────────────────────────────── */
+      .toast {
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        background: #0f172a;
+        color: #fff;
+        padding: 14px 20px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 14px;
+        box-shadow: var(--shadow-lg);
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 200;
+        pointer-events: none;
+        max-width: calc(100vw - 48px);
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .toast.error {
+        background: var(--danger);
+      }
+      .toast.success {
+        background: var(--success);
+      }
+
+      /* ══════════════════════════════════════════════
+         RESPONSIVE
+         ══════════════════════════════════════════════ */
+      @media (max-width: 1024px) {
+        .main {
+          padding: 24px 20px;
+        }
+        .pageHeader h1 {
+          font-size: 22px;
+        }
+        .stat .value {
+          font-size: 26px;
+        }
+        .stats {
+          grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+          box-shadow: none;
+        }
+        .sidebar.open {
+          transform: translateX(0);
+          box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35);
+        }
+        .mobileHeader {
+          display: flex;
+        }
+        .main {
+          margin-left: 0;
+          padding: 16px;
+          padding-bottom: calc(40px + env(safe-area-inset-bottom));
+        }
+        .pageHeader {
+          flex-direction: column;
+          align-items: stretch;
+          margin-bottom: 20px;
+        }
+        .pageHeader h1 {
+          font-size: 20px;
+        }
+        .pageHeaderActions {
+          width: 100%;
+        }
+        .pageHeaderActions .btn {
+          flex: 1;
+          justify-content: center;
+        }
+        .stats {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 10px;
+          margin-bottom: 20px;
+        }
+        .stat {
+          padding: 16px;
+          border-radius: 14px;
+        }
+        .statIcon {
+          top: 12px;
+          right: 12px;
+          width: 32px;
+          height: 32px;
+          font-size: 15px;
+        }
+        .stat .value {
+          font-size: 22px;
+        }
+        .stat .label {
+          font-size: 10px;
+        }
+        .panelHeader {
+          padding: 16px;
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .panelHeader h2 {
+          font-size: 15px;
+        }
+        .searchBox {
+          width: 100%;
+        }
+        th,
+        td {
+          padding: 12px 16px;
+          font-size: 13px;
+        }
+        .modalBox {
+          padding: 20px;
+          border-radius: 16px;
+        }
+        .row2 {
+          grid-template-columns: 1fr;
+        }
+        .toast {
+          top: auto;
+          bottom: 24px;
+          right: 16px;
+          left: 16px;
+          text-align: center;
+        }
+        .loginCard {
+          padding: 28px 22px;
+        }
+      }
+
+      @media (max-width: 400px) {
+        .stats {
+          grid-template-columns: 1fr;
+        }
+        .pageHeader h1 {
+          font-size: 18px;
+        }
+        .stat .value {
+          font-size: 20px;
+        }
+      }
+
+      /* ══════════════════════════════════════════════
+         ACTIVITY CHART (inline styles in JS)
+         ══════════════════════════════════════════════ */
+      .activityChart {
+        padding: 24px;
+      }
+      .chartRow {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        height: 140px;
+      }
+      .chartBar {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+      .chartBarValue {
+        font-size: 10px;
+        font-weight: 800;
+        color: var(--text-2);
+      }
+      .chartBarFill {
+        width: 100%;
+        background: var(--primary);
+        border-radius: 4px;
+        min-height: 4px;
+        transition: height 0.3s;
+      }
+      .chartBarFill.empty {
+        background: #e2e8f0;
+      }
+      .chartBarDay {
+        font-size: 9px;
+        color: var(--muted-2);
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══════════════════ SPLASH ═══════════════════ -->
+    <div class="splash" id="splashView">
+      <div class="splashInner">
+        <img src="/logo.png" alt="TapCard" class="splashLogo" />
+        <div class="spinner"></div>
+        <div class="splashText">Loading admin panel…</div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ LOGIN ═══════════════════ -->
+    <div class="login" id="loginView" style="display: none">
+      <div class="loginCard">
+        <img src="/logo.png" alt="TapCard" class="loginLogo" />
+        <h1>Admin Panel</h1>
+        <p>Sign in to manage users and content.</p>
+        <input type="text" id="nameInput" placeholder="Admin name" />
+        <input type="password" id="pwdInput" placeholder="Admin password" />
+        <button id="loginBtn" onclick="login()">Sign In</button>
+        <div class="error" id="loginError"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ APP ═══════════════════ -->
+    <div class="app" id="appView">
+      <!-- Mobile top bar -->
+      <div class="mobileHeader">
+        <div class="mobileHeaderBrand">
+          <img src="/logo.png" alt="TapCard" />
+          <span>TapCard Admin</span>
+        </div>
+        <button class="menuBtn" onclick="toggleSidebar()" aria-label="Menu">
+          ☰
+        </button>
+      </div>
+
+      <!-- Overlay -->
+      <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebarHeader">
+          <div class="sidebarLogo">
+            <img src="/logo.png" alt="TapCard" class="sidebarLogoIcon" />
+            <div>
+              <div class="sidebarLogoText">TapCard</div>
+              <div class="sidebarLogoSub">Admin Console</div>
+            </div>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <div class="navGroupLabel">Overview</div>
+          <button
+            class="navItem active"
+            data-page="dashboard"
+            onclick="switchPage('dashboard')"
+          >
+            <span class="navIcon">📊</span>
+            <span class="navLabel">Dashboard</span>
+          </button>
+          <button
+            class="navItem"
+            data-page="activity"
+            onclick="switchPage('activity')"
+          >
+            <span class="navIcon">📈</span>
+            <span class="navLabel">Activity & Retention</span>
+          </button>
+
+          <div class="navGroupLabel">Content</div>
+          <button
+            class="navItem"
+            data-page="users"
+            onclick="switchPage('users')"
+          >
+            <span class="navIcon">👥</span>
+            <span class="navLabel">Users</span>
+          </button>
+          <button class="navItem" data-page="qrs" onclick="switchPage('qrs')">
+            <span class="navIcon">▤</span>
+            <span class="navLabel">QR Codes</span>
+          </button>
+
+          <div class="navGroupLabel">Engagement</div>
+          <button
+            class="navItem"
+            data-page="streaks"
+            onclick="switchPage('streaks')"
+          >
+            <span class="navIcon">🔥</span>
+            <span class="navLabel">Streaks & Rewards</span>
+          </button>
+          <button
+            class="navItem"
+            data-page="spins"
+            onclick="switchPage('spins')"
+          >
+            <span class="navIcon">🎡</span>
+            <span class="navLabel">Daily Spins</span>
+          </button>
+          <button
+            class="navItem"
+            data-page="earnings"
+            onclick="switchPage('earnings')"
+          >
+            <span class="navIcon">💰</span>
+            <span class="navLabel">Earnings</span>
+          </button>
+          <button
+            class="navItem"
+            data-page="achievements"
+            onclick="switchPage('achievements')"
+          >
+            <span class="navIcon">🏆</span>
+            <span class="navLabel">Achievements</span>
+          </button>
+
+          <div class="navGroupLabel">Productivity</div>
+          <button
+            class="navItem"
+            data-page="notes"
+            onclick="switchPage('notes')"
+          >
+            <span class="navIcon">📝</span>
+            <span class="navLabel">Notes</span>
+          </button>
+          <button
+            class="navItem"
+            data-page="tasks"
+            onclick="switchPage('tasks')"
+          >
+            <span class="navIcon">✅</span>
+            <span class="navLabel">Tasks</span>
+          </button>
+          <button
+            class="navItem"
+            data-page="reminders"
+            onclick="switchPage('reminders')"
+          >
+            <span class="navIcon">🔔</span>
+            <span class="navLabel">Reminders</span>
+          </button>
+
+          <div class="navGroupLabel">Communication</div>
+          <button
+            class="navItem"
+            data-page="notifications"
+            onclick="switchPage('notifications')"
+          >
+            <span class="navIcon">🔔</span>
+            <span class="navLabel">Notifications</span>
+            <span class="navBadge" id="notifBadge" style="display: none"
+              >0</span
+            >
+          </button>
+          <button class="navItem" data-page="push" onclick="switchPage('push')">
+            <span class="navIcon">📲</span>
+            <span class="navLabel">Push Notifications</span>
+          </button>
+          <button
+            class="navItem"
+            data-page="support"
+            onclick="switchPage('support')"
+          >
+            <span class="navIcon">💬</span>
+            <span class="navLabel">Support</span>
+          </button>
+        </nav>
+
+        <div class="sidebarBottom">
+          <div class="adminInfo">
+            <div class="adminAvatar" id="adminAvatar">A</div>
+            <div style="min-width: 0">
+              <div class="adminName" id="adminName">Admin</div>
+              <div class="adminRole">Administrator</div>
+            </div>
+          </div>
+          <button class="navItem" onclick="logout()">
+            <span class="navIcon">🚪</span>
+            <span class="navLabel">Log Out</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main class="main">
+        <!-- Dashboard -->
+        <section id="page-dashboard">
+          <div class="pageHeader">
+            <div>
+              <h1>Dashboard</h1>
+              <div class="sub" id="todayDate"></div>
+            </div>
+            <div class="pageHeaderActions">
+              <button class="btn btn-ghost" onclick="loadAll()">
+                ↻ Refresh
+              </button>
+              <button class="btn btn-primary" onclick="openCreateUser()">
+                + New User
+              </button>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="statIcon" style="background: #dbeafe">👥</div>
+              <div class="label">Total Users</div>
+              <div class="value" id="statUsers">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #dcfce7">▤</div>
+              <div class="label">QR Codes</div>
+              <div class="value" id="statQRs">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #fef3c7">💰</div>
+              <div class="label">Credits Issued</div>
+              <div class="value" id="statCredits">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #fce7f3">🔥</div>
+              <div class="label">Active Today</div>
+              <div class="value" id="statActive">–</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panelHeader">
+              <h2>Recent Users</h2>
+            </div>
+            <div id="recentUsersLoading" class="loading">Loading…</div>
+            <div id="recentUsers" class="tableWrap"></div>
+          </div>
+        </section>
+
+        <!-- Users -->
+        <section id="page-users" style="display: none">
+          <div class="pageHeader">
+            <div>
+              <h1>Users</h1>
+              <div class="sub">Manage all registered accounts</div>
+            </div>
+            <div class="pageHeaderActions">
+              <button class="btn btn-primary" onclick="openCreateUser()">
+                + New User
+              </button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panelHeader">
+              <h2 id="userCount">All Users</h2>
+              <input
+                class="searchBox"
+                placeholder="Search by name or email…"
+                oninput="filterUsers(this.value)"
+              />
+            </div>
+            <div id="usersLoading" class="loading">Loading…</div>
+            <div class="tableWrap">
+              <table id="usersTable" style="display: none">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Credits</th>
+                    <th>Plan</th>
+                    <th>Status</th>
+                    <th>QRs</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="usersBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- QR Codes -->
+        <section id="page-qrs" style="display: none">
+          <div class="pageHeader">
+            <div>
+              <h1>QR Codes</h1>
+              <div class="sub">All QR codes across all users</div>
+            </div>
+            <div class="pageHeaderActions">
+              <button class="btn btn-ghost" onclick="loadQRs()">
+                ↻ Refresh
+              </button>
+            </div>
+          </div>
+          <div class="panel">
+            <div id="qrsLoading" class="loading">Loading…</div>
+            <div class="tableWrap">
+              <table id="qrsTable" style="display: none">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Title</th>
+                    <th>Phone</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="qrsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Notifications -->
+        <section id="page-notifications" style="display: none">
+          <div class="pageHeader">
+            <div>
+              <h1>Notifications</h1>
+              <div class="sub">Broadcast announcements to users</div>
+            </div>
+            <div class="pageHeaderActions">
+              <button class="btn btn-primary" onclick="openSendNotification()">
+                + Send Notification
+              </button>
+            </div>
+          </div>
+          <div class="panel">
+            <div id="notifsLoading" class="loading">Loading…</div>
+            <div class="tableWrap">
+              <table id="notifsTable" style="display: none">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Title</th>
+                    <th>Body</th>
+                    <th>Sent</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="notifsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Push Notifications -->
+        <section id="page-push" style="display: none">
+          <div class="pageHeader">
+            <div>
+              <h1>Push Notifications</h1>
+              <div class="sub">Send real-time alerts via Firebase</div>
+            </div>
+            <div class="pageHeaderActions">
+              <button class="btn btn-primary" onclick="openPushComposer()">
+                + New Push
+              </button>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="statIcon" style="background: #dcfce7">📲</div>
+              <div class="label">Devices with Token</div>
+              <div class="value" id="pushTokenCount">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #fef3c7">👥</div>
+              <div class="label">Total Users</div>
+              <div class="value" id="pushUserCount">–</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panelHeader">
+              <h2>Users &amp; Tokens</h2>
+              <input
+                class="searchBox"
+                placeholder="Search by name, email, or token…"
+                oninput="filterPushUsers(this.value)"
+              />
+            </div>
+            <div id="pushLoading" class="loading">Loading…</div>
+            <div class="tableWrap">
+              <table id="pushTable" style="display: none">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>FCM Token</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="pushBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Support -->
+        <section id="page-support" style="display: none">
+          <div class="pageHeader">
+            <div>
+              <h1>Support Tickets</h1>
+              <div class="sub">
+                Messages from the support form on your website
+              </div>
+            </div>
+            <div class="pageHeaderActions">
+              <select
+                id="supportFilter"
+                onchange="loadSupportTickets()"
+                class="searchBox"
+                style="width: auto"
+              >
+                <option value="all">All</option>
+                <option value="open" selected>Open</option>
+                <option value="in_progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+              </select>
+              <button class="btn btn-ghost" onclick="loadSupportTickets()">
+                ↻ Refresh
+              </button>
+            </div>
+          </div>
+          <div id="supportList">
+            <div class="loading">Loading…</div>
+          </div>
+        </section>
+
+        <!-- Streaks -->
+        <section id="page-streaks" style="display: none">
+          <div class="pageHeader">
+            <div>
+              <h1>Streaks &amp; Rewards</h1>
+              <div class="sub">Daily check-in tracking</div>
+            </div>
+            <div class="pageHeaderActions">
+              <button class="btn btn-ghost" onclick="loadStreaks()">
+                ↻ Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="statIcon" style="background: #fef3c7">🔥</div>
+              <div class="label">Active Today</div>
+              <div class="value" id="statActiveToday">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #dbeafe">📅</div>
+              <div class="label">Active This Week</div>
+              <div class="value" id="statActiveWeek">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #dcfce7">✅</div>
+              <div class="label">Total Check-Ins</div>
+              <div class="value" id="statTotalCheckIns">–</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panelHeader"><h2>Top Streaks</h2></div>
+            <div id="streaksLoading" class="loading">Loading…</div>
+            <div class="tableWrap">
+              <table id="streaksTable" style="display: none">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Current</th>
+                    <th>Longest</th>
+                    <th>Total</th>
+                    <th>Last Check-In</th>
+                  </tr>
+                </thead>
+                <tbody id="streaksBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Spins -->
+        <section id="page-spins" style="display: none">
+          <div class="pageHeader">
+            <div>
+              <h1>Daily Spins</h1>
+              <div class="sub">Track spin usage and prize distribution</div>
+            </div>
+            <div class="pageHeaderActions">
+              <button class="btn btn-ghost" onclick="loadSpins()">
+                ↻ Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="statIcon" style="background: #fef3c7">🎰</div>
+              <div class="label">Spins Today</div>
+              <div class="value" id="spinStatToday">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #dbeafe">📅</div>
+              <div class="label">Spins This Week</div>
+              <div class="value" id="spinStatWeek">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #fce7f3">💰</div>
+              <div class="label">Credits Won</div>
+              <div class="value" id="spinStatCredits">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #dcfce7">🎯</div>
+              <div class="label">Win Rate</div>
+              <div class="value" id="spinStatWinRate">–</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panelHeader"><h2>Recent Spins</h2></div>
+            <div id="spinsLoading" class="loading">Loading…</div>
+            <div class="tableWrap">
+              <table id="spinsTable" style="display: none">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Prize</th>
+                    <th>Credits</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody id="spinsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Notes -->
+        <section id="page-notes" style="display: none">
+          <div class="pageHeader">
+            <div>
+              <h1>User Notes</h1>
+              <div class="sub">Notes created by users in the app</div>
+            </div>
+            <div class="pageHeaderActions">
+              <button class="btn btn-ghost" onclick="loadNotes()">
+                ↻ Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="statIcon" style="background: #e0f2fe">📝</div>
+              <div class="label">Total Notes</div>
+              <div class="value" id="notesTotal">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #dbeafe">👥</div>
+              <div class="label">Unique Users</div>
+              <div class="value" id="notesUsers">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #dcfce7">✨</div>
+              <div class="label">Notes Today</div>
+              <div class="value" id="notesToday">–</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panelHeader"><h2>Recent Notes</h2></div>
+            <div id="notesLoading" class="loading">Loading…</div>
+            <div class="tableWrap">
+              <table id="notesTable" style="display: none">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Title</th>
+                    <th>Body</th>
+                    <th>Tags</th>
+                    <th>Updated</th>
+                  </tr>
+                </thead>
+                <tbody id="notesBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tasks -->
+        <section id="page-tasks" style="display: none">
+          <div class="pageHeader">
+            <div>
+              <h1>User Tasks</h1>
+              <div class="sub">Tasks created by users in the app</div>
+            </div>
+            <div class="pageHeaderActions">
+              <button class="btn btn-ghost" onclick="loadTasks()">
+                ↻ Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="statIcon" style="background: #e0f2fe">✅</div>
+              <div class="label">Total Tasks</div>
+              <div class="value" id="tasksTotal">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #dcfce7">🎯</div>
+              <div class="label">Completed</div>
+              <div class="value" id="tasksCompleted">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #fef3c7">📈</div>
+              <div class="label">Completion Rate</div>
+              <div class="value" id="tasksRate">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #fce7f3">👥</div>
+              <div class="label">Unique Users</div>
+              <div class="value" id="tasksUsers">–</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panelHeader"><h2>Recent Tasks</h2></div>
+            <div id="tasksLoading" class="loading">Loading…</div>
+            <div class="tableWrap">
+              <table id="tasksTable" style="display: none">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Title</th>
+                    <th>Due</th>
+                    <th>Recurring</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="tasksBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Reminders -->
+        <section id="page-reminders" style="display: none">
+          <div class="pageHeader">
+            <div>
+              <h1>User Reminders</h1>
+              <div class="sub">Scheduled reminders from the app</div>
+            </div>
+            <div class="pageHeaderActions">
+              <button class="btn btn-ghost" onclick="loadReminders()">
+                ↻ Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="statIcon" style="background: #e0f2fe">🔔</div>
+              <div class="label">Total Reminders</div>
+              <div class="value" id="remTotal">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #dcfce7">✅</div>
+              <div class="label">Active</div>
+              <div class="value" id="remActive">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #fef3c7">📅</div>
+              <div class="label">Upcoming</div>
+              <div class="value" id="remUpcoming">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #fce7f3">👥</div>
+              <div class="label">Unique Users</div>
+              <div class="value" id="remUsers">–</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panelHeader"><h2>Recent Reminders</h2></div>
+            <div id="remLoading" class="loading">Loading…</div>
+            <div class="tableWrap">
+              <table id="remTable" style="display: none">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Title</th>
+                    <th>When</th>
+                    <th>Repeat</th>
+                    <th>Enabled</th>
+                  </tr>
+                </thead>
+                <tbody id="remBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Earnings -->
+        <section id="page-earnings" style="display: none">
+          <div class="pageHeader">
+            <div>
+              <h1>Earnings Overview</h1>
+              <div class="sub">Credits awarded to users across all sources</div>
+            </div>
+            <div class="pageHeaderActions">
+              <button class="btn btn-ghost" onclick="loadEarnings()">
+                ↻ Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="statIcon" style="background: #dbeafe">💰</div>
+              <div class="label">Lifetime Credits</div>
+              <div class="value" id="earnLifetime">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #dcfce7">📈</div>
+              <div class="label">Credits Today</div>
+              <div class="value" id="earnToday">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #fef3c7">👥</div>
+              <div class="label">Users Earning</div>
+              <div class="value" id="earnUsers">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #fce7f3">🏆</div>
+              <div class="label">Top Earner</div>
+              <div class="value" id="earnTop">–</div>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="statIcon" style="background: #fef3c7">🔥</div>
+              <div class="label">From Streaks</div>
+              <div class="value" id="earnStreak">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #fce7f3">🎡</div>
+              <div class="label">From Spins</div>
+              <div class="value" id="earnSpin">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #dcfce7">🏆</div>
+              <div class="label">From Achievements</div>
+              <div class="value" id="earnAch">–</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panelHeader"><h2>Top Earners</h2></div>
+            <div id="earnLoading" class="loading">Loading…</div>
+            <div class="tableWrap">
+              <table id="earnTable" style="display: none">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Lifetime Credits</th>
+                  </tr>
+                </thead>
+                <tbody id="earnBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Achievements -->
+        <section id="page-achievements" style="display: none">
+          <div class="pageHeader">
+            <div>
+              <h1>Achievements</h1>
+              <div class="sub">Badge unlock distribution across users</div>
+            </div>
+            <div class="pageHeaderActions">
+              <button class="btn btn-ghost" onclick="loadAchievements()">
+                ↻ Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="statIcon" style="background: #fef3c7">🏆</div>
+              <div class="label">Total Unlocks</div>
+              <div class="value" id="achTotal">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #dbeafe">👥</div>
+              <div class="label">Users With Badges</div>
+              <div class="value" id="achUsers">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #dcfce7">📚</div>
+              <div class="label">Total Badges</div>
+              <div class="value" id="achCount">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #fce7f3">🎯</div>
+              <div class="label">Top Badge</div>
+              <div class="value" id="achTop" style="font-size: 20px">–</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panelHeader"><h2>All Badges</h2></div>
+            <div id="achLoading" class="loading">Loading…</div>
+            <div class="tableWrap">
+              <table id="achTable" style="display: none">
+                <thead>
+                  <tr>
+                    <th>Badge</th>
+                    <th>Key</th>
+                    <th>Category</th>
+                    <th>Reward</th>
+                    <th>Unlocked By</th>
+                  </tr>
+                </thead>
+                <tbody id="achBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Activity -->
+        <section id="page-activity" style="display: none">
+          <div class="pageHeader">
+            <div>
+              <h1>Activity & Retention</h1>
+              <div class="sub">
+                Daily active users, feature usage, retention
+              </div>
+            </div>
+            <div class="pageHeaderActions">
+              <button class="btn btn-ghost" onclick="loadActivity()">
+                ↻ Refresh
+              </button>
+            </div>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="statIcon" style="background: #dbeafe">📅</div>
+              <div class="label">DAU</div>
+              <div class="value" id="actDau">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #dcfce7">📈</div>
+              <div class="label">WAU</div>
+              <div class="value" id="actWau">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #fef3c7">🎯</div>
+              <div class="label">MAU</div>
+              <div class="value" id="actMau">–</div>
+            </div>
+            <div class="stat">
+              <div class="statIcon" style="background: #fce7f3">🔥</div>
+              <div class="label">Stickiness</div>
+              <div class="value" id="actStick">–</div>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-bottom: 24px">
+            <div class="panelHeader">
+              <h2>Feature Usage (last 30 days)</h2>
+            </div>
+            <div id="actFeatures" class="loading">Loading…</div>
+          </div>
+
+          <div class="panel">
+            <div class="panelHeader">
+              <h2>Last 14 Days — Daily Active</h2>
+            </div>
+            <div id="actChart" class="loading" style="padding: 24px">
+              Loading…
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ═══════════════════ MODALS ═══════════════════ -->
+
+    <!-- User Modal -->
+    <div class="modal" id="userModal">
+      <div class="modalBox">
+        <h3 id="userModalTitle">New User</h3>
+        <p class="modalSub" id="userModalSub">Fill in the details below</p>
+        <div class="field">
+          <label>Full Name</label>
+          <input id="uName" placeholder="John Doe" />
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input id="uEmail" type="email" placeholder="john@example.com" />
+        </div>
+        <div class="field" id="passwordField">
+          <label>Password</label>
+          <input
+            id="uPassword"
+            type="password"
+            placeholder="At least 6 characters"
+          />
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>Credits</label>
+            <input id="uCredits" type="number" value="100" min="0" />
+          </div>
+          <div class="field">
+            <label>Plan</label>
+            <select id="uPlan">
+              <option value="free">Free</option>
+              <option value="pro">Pro</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select id="uStatus">
+            <option value="active">Active</option>
+            <option value="suspended">Suspended</option>
+          </select>
+        </div>
+        <div class="modalActions">
+          <button class="modalCancel" onclick="closeModal('userModal')">
+            Cancel
+          </button>
+          <button class="modalSave" onclick="saveUser()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reset Password Modal -->
+    <div class="modal" id="resetPwdModal">
+      <div class="modalBox">
+        <h3>Reset Password</h3>
+        <p class="modalSub" id="resetPwdSub"></p>
+        <div class="resetInfo" id="resetPwdInfo"></div>
+        <div class="field">
+          <label>New Temporary Password</label>
+          <div class="pwdRow">
+            <input
+              type="text"
+              id="resetPwdInput"
+              placeholder="At least 6 characters"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button
+              type="button"
+              class="iconBtn"
+              title="Generate random"
+              onclick="generateRandomPassword()"
+            >
+              🔄
+            </button>
+            <button
+              type="button"
+              class="iconBtn"
+              title="Copy"
+              onclick="copyResetPassword()"
+            >
+              📋
+            </button>
+          </div>
+        </div>
+        <div class="resetNote">
+          ⚠️ Share this password with the user through a secure channel
+          (WhatsApp, SMS, or a phone call — not public email). Ask them to
+          change it after their first login.
+        </div>
+        <div class="modalActions">
+          <button class="modalCancel" onclick="closeModal('resetPwdModal')">
+            Cancel
+          </button>
+          <button class="modalSave" onclick="confirmResetPassword()">
+            Set Password
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Credit Modal -->
+    <div class="modal" id="creditModal">
+      <div class="modalBox">
+        <h3>Edit Credits</h3>
+        <p class="modalSub" id="creditUserName"></p>
+        <div class="field">
+          <label>Credits</label>
+          <input type="number" id="creditInput" min="0" />
+        </div>
+        <div class="modalActions">
+          <button class="modalCancel" onclick="closeModal('creditModal')">
+            Cancel
+          </button>
+          <button class="modalSave" onclick="saveCredits()">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Modal -->
+    <div class="modal" id="notifModal">
+      <div class="modalBox">
+        <h3>Send Notification</h3>
+        <p class="modalSub">Broadcast to all users, or target one</p>
+        <div class="field">
+          <label>Recipient</label>
+          <select id="nRecipient">
+            <option value="broadcast">All users (broadcast)</option>
+            <option value="single">Specific user</option>
+          </select>
+        </div>
+        <div class="field" id="nUserField" style="display: none">
+          <label>User Email</label>
+          <input id="nUserEmail" placeholder="user@example.com" />
+        </div>
+        <div class="field">
+          <label>Type</label>
+          <select id="nType">
+            <option value="info">Info</option>
+            <option value="success">Success</option>
+            <option value="warning">Warning</option>
+            <option value="promo">Promo</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Title</label>
+          <input id="nTitle" placeholder="Exciting news!" />
+        </div>
+        <div class="field">
+          <label>Message</label>
+          <textarea id="nBody" placeholder="Write your message…"></textarea>
+        </div>
+        <div class="modalActions">
+          <button class="modalCancel" onclick="closeModal('notifModal')">
+            Cancel
+          </button>
+          <button class="modalSave" onclick="sendNotification()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Push Modal -->
+    <div class="modal" id="pushModal">
+      <div class="modalBox">
+        <h3>Send Push Notification</h3>
+        <p class="modalSub" id="pushRecipient"></p>
+        <div class="field">
+          <label>Title</label>
+          <input id="pTitle" placeholder="Important update!" maxlength="60" />
+        </div>
+        <div class="field">
+          <label>Message</label>
+          <textarea
+            id="pBody"
+            placeholder="Write your message…"
+            maxlength="200"
+          ></textarea>
+        </div>
+        <div class="modalActions">
+          <button class="modalCancel" onclick="closeModal('pushModal')">
+            Cancel
+          </button>
+          <button class="modalSave" onclick="sendPush()">Send Push</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      const API = "https://tapcardss-api.netlify.app/.netlify/functions/admin";
+      let adminToken = "";
+      let allUsers = [];
+      let editingUserId = null;
+      let pushUsers = [];
+      let pushTargetUserId = null;
+      let loadedTabs = {};
+
+      // ─── Sidebar ────────────────────────────────────
+      function toggleSidebar() {
+        document.getElementById("sidebar").classList.toggle("open");
+        document.getElementById("overlay").classList.toggle("visible");
+      }
+      function closeSidebar() {
+        document.getElementById("sidebar").classList.remove("open");
+        document.getElementById("overlay").classList.remove("visible");
+      }
+
+      // ─── Init ───────────────────────────────────────
+      window.onload = async () => {
+        document.getElementById("todayDate").textContent =
+          new Date().toLocaleDateString("en-IN", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+
+        const saved = localStorage.getItem("adminToken");
+        const savedName = localStorage.getItem("adminName");
+
+        if (!saved) {
+          showLogin();
+          return;
+        }
+
+        adminToken = saved;
+
+        try {
+          await apiCall("stats");
+          if (savedName) {
+            document.getElementById("adminName").textContent = savedName;
+            document.getElementById("adminAvatar").textContent =
+              initials(savedName);
+          }
+          showApp();
+        } catch (e) {
+          adminToken = "";
+          localStorage.removeItem("adminToken");
+          localStorage.removeItem("adminName");
+          showLogin();
+        }
+      };
+
+      function showLogin() {
+        document.getElementById("splashView").style.display = "none";
+        document.getElementById("loginView").style.display = "flex";
+        document.getElementById("appView").classList.remove("visible");
+      }
+
+      async function login() {
+        const name = document.getElementById("nameInput").value.trim();
+        const pwd = document.getElementById("pwdInput").value;
+        const errEl = document.getElementById("loginError");
+        const btn = document.getElementById("loginBtn");
+
+        errEl.textContent = "";
+        if (!name) {
+          errEl.textContent = "Enter your name";
+          return;
+        }
+        if (!pwd) {
+          errEl.textContent = "Enter your password";
+          return;
+        }
+
+        adminToken = pwd;
+        btn.disabled = true;
+        btn.textContent = "Signing in…";
+
+        document.getElementById("loginView").style.display = "none";
+        document.getElementById("splashView").style.display = "flex";
+
+        try {
+          await apiCall("stats");
+          localStorage.setItem("adminToken", pwd);
+          localStorage.setItem("adminName", name);
+          document.getElementById("adminName").textContent = name;
+          document.getElementById("adminAvatar").textContent = initials(name);
+          showApp();
+        } catch (e) {
+          adminToken = "";
+          localStorage.removeItem("adminToken");
+          localStorage.removeItem("adminName");
+          errEl.textContent = "Wrong password";
+          showLogin();
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Sign In";
+        }
+      }
+
+      function logout() {
+        adminToken = "";
+        localStorage.removeItem("adminToken");
+        localStorage.removeItem("adminName");
+        location.reload();
+      }
+
+      function showApp() {
+        document.getElementById("splashView").style.display = "none";
+        document.getElementById("loginView").style.display = "none";
+        document.getElementById("appView").classList.add("visible");
+        loadAll();
+      }
+
+      // ─── API ────────────────────────────────────────
+      async function apiCall(action, body = {}) {
+        const res = await fetch(API, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${adminToken}`,
+          },
+          body: JSON.stringify({ action, ...body }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Request failed");
+        return data;
+      }
+
+      // ─── Navigation ─────────────────────────────────
+      function switchPage(page) {
+        const pages = [
+          "dashboard",
+          "users",
+          "qrs",
+          "notifications",
+          "push",
+          "support",
+          "streaks",
+          "spins",
+          "notes",
+          "tasks",
+          "reminders",
+          "earnings",
+          "achievements",
+          "activity",
+        ];
+        pages.forEach((p) => {
+          const el = document.getElementById(`page-${p}`);
+          if (el) el.style.display = p === page ? "block" : "none";
+        });
+        document.querySelectorAll(".navItem").forEach((el) => {
+          el.classList.toggle("active", el.dataset.page === page);
+        });
+        closeSidebar();
+
+        // Lazy load that specific tab
+        const loaders = {
+          dashboard: loadStats,
+          users: loadUsers,
+          qrs: loadQRs,
+          notifications: loadNotifications,
+          push: loadPush,
+          support: loadSupportTickets,
+          streaks: loadStreaks,
+          spins: loadSpins,
+          notes: loadNotes,
+          tasks: loadTasks,
+          reminders: loadReminders,
+          earnings: loadEarnings,
+          achievements: loadAchievements,
+          activity: loadActivity,
+        };
+        if (loaders[page]) loaders[page]();
+      }
+
+      // ─── Load All ───────────────────────────────────
+      function loadAll() {
+        loadStats();
+        loadUsers();
+        loadQRs();
+        loadNotifications();
+        loadPush();
+      }
+
+      // ─── Stats ──────────────────────────────────────
+      async function loadStats() {
+        try {
+          const s = await apiCall("stats");
+          document.getElementById("statUsers").textContent = s.totalUsers;
+          document.getElementById("statQRs").textContent = s.totalQRs;
+          document.getElementById("statCredits").textContent = s.totalCredits;
+          document.getElementById("statActive").textContent = s.activeToday;
+        } catch (e) {
+          toast(e.message, "error");
+        }
+      }
+
+      // ─── Users ──────────────────────────────────────
+      async function loadUsers() {
+        try {
+          const { users } = await apiCall("listUsers");
+          allUsers = users;
+          renderUsers(users);
+          renderRecentUsers(users.slice(0, 5));
+        } catch (e) {
+          document.getElementById("usersLoading").textContent =
+            "Error: " + e.message;
+        }
+      }
+
+      function renderUsers(users) {
+        document.getElementById("usersLoading").style.display = "none";
+        document.getElementById("usersTable").style.display = "table";
+        document.getElementById("userCount").textContent =
+          `All Users (${users.length})`;
+
+        const body = document.getElementById("usersBody");
+        if (!users.length) {
+          body.innerHTML =
+            '<tr><td colspan="7" class="empty">No users yet</td></tr>';
+          return;
+        }
+
+        body.innerHTML = users
+          .map(
+            (u) => `
+          <tr>
+            <td>
+              <div class="userCell">
+                <span class="avatar">${initials(u.name || u.email)}</span>
+                ${escape(u.name || "—")}
+              </div>
+            </td>
+            <td>${escape(u.email)}</td>
+            <td><span class="badge badgeCredits">${u.credits}</span></td>
+            <td><span class="badge ${u.plan === "pro" ? "badgePro" : "badgeFree"}">${u.plan}</span></td>
+            <td><span class="badge ${u.status === "active" ? "badgeActive" : "badgeSuspended"}">${u.status}</span></td>
+            <td>${u.qrCount}</td>
+            <td>
+              <button class="btn btn-sm btn-success" onclick="quickAdd('${u.id}', 10)">+10</button>
+              <button class="btn btn-sm btn-info" onclick="openEditUser('${u.id}')">Edit</button>
+              <button class="btn btn-sm btn-warning" onclick="openNotifForUser('${escape(u.email)}')">Notify</button>
+              <button class="btn btn-sm btn-purple" onclick="openPushForUser('${u.id}')" ${!u.fcmToken ? "disabled" : ""}>Push</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}', '${escape(u.email)}', this)">Delete</button>
+              <button class="btn btn-sm btn-purple" onclick="openResetPassword('${u.id}')">Reset Pwd</button>
+            </td>
+          </tr>
+        `,
+          )
+          .join("");
+      }
+
+      function filterUsers(q) {
+        const query = q.trim().toLowerCase();
+        if (!query) return renderUsers(allUsers);
+        const filtered = allUsers.filter(
+          (u) =>
+            (u.name || "").toLowerCase().includes(query) ||
+            (u.email || "").toLowerCase().includes(query),
+        );
+        renderUsers(filtered);
+      }
+
+      function renderRecentUsers(users) {
+        document.getElementById("recentUsersLoading").style.display = "none";
+        const container = document.getElementById("recentUsers");
+        if (!users.length) {
+          container.innerHTML = '<div class="empty">No users yet</div>';
+          return;
+        }
+        container.innerHTML = `
+        <table>
+          <thead>
+            <tr><th>User</th><th>Email</th><th>Credits</th><th>Joined</th></tr>
+          </thead>
+          <tbody>
+            ${users
+              .map(
+                (u) => `
+              <tr>
+                <td><div class="userCell"><span class="avatar">${initials(u.name || u.email)}</span>${escape(u.name || "—")}</div></td>
+                <td>${escape(u.email)}</td>
+                <td><span class="badge badgeCredits">${u.credits}</span></td>
+                <td>${new Date(u.createdAt).toLocaleDateString()}</td>
+              </tr>
+            `,
+              )
+              .join("")}
+          </tbody>
+        </table>
+      `;
+      }
+
+      // ─── Reset Password ─────────────────────────────
+      let resetPwdUserId = null;
+
+      function openResetPassword(userId) {
+        const u = allUsers.find((x) => x.id === userId);
+        if (!u) return;
+        resetPwdUserId = userId;
+        document.getElementById("resetPwdSub").textContent =
+          "Set a new temporary password for this user.";
+        document.getElementById("resetPwdInfo").innerHTML = `
+    <div class="row"><div class="label">Name</div><div class="value">${escape(u.name || "—")}</div></div>
+    <div class="row"><div class="label">Email</div><div class="value">${escape(u.email)}</div></div>
+    <div class="row"><div class="label">Phone</div><div class="value">${escape(u.phone || "—")}</div></div>
+  `;
+        document.getElementById("resetPwdInput").value = generatePassword();
+        document.getElementById("resetPwdModal").classList.add("open");
+      }
+
+      function generatePassword() {
+        const chars =
+          "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%";
+        let pwd = "";
+        for (let i = 0; i < 12; i++) {
+          pwd += chars[Math.floor(Math.random() * chars.length)];
+        }
+        return pwd;
+      }
+
+      function generateRandomPassword() {
+        document.getElementById("resetPwdInput").value = generatePassword();
+      }
+
+      function copyResetPassword() {
+        const val = document.getElementById("resetPwdInput").value;
+        if (!val) return;
+        navigator.clipboard.writeText(val).then(
+          () => toast("Password copied", "success"),
+          () => toast("Copy failed", "error"),
+        );
+      }
+
+      async function confirmResetPassword() {
+        const newPassword = document
+          .getElementById("resetPwdInput")
+          .value.trim();
+        if (!resetPwdUserId) {
+          toast("No user selected", "error");
+          return;
+        }
+        if (newPassword.length < 6) {
+          toast("Password must be at least 6 characters", "error");
+          return;
+        }
+
+        const u = allUsers.find((x) => x.id === resetPwdUserId);
+        const confirmed = confirm(
+          `Set password for ${u?.email || "user"} to:\n\n${newPassword}\n\nShare this with the user securely.`,
+        );
+        if (!confirmed) return;
+
+        try {
+          await apiCall("resetUserPassword", {
+            userId: resetPwdUserId,
+            newPassword,
+          });
+          closeModal("resetPwdModal");
+          toast("Password updated", "success");
+          resetPwdUserId = null;
+        } catch (e) {
+          toast(e.message, "error");
+        }
+      }
+
+      // ─── QRs ────────────────────────────────────────
+      async function loadQRs() {
+        try {
+          const { qrCodes } = await apiCall("listQRs");
+          document.getElementById("qrsLoading").style.display = "none";
+          const table = document.getElementById("qrsTable");
+          const body = document.getElementById("qrsBody");
+          if (!qrCodes.length) {
+            document.getElementById("qrsLoading").style.display = "block";
+            document.getElementById("qrsLoading").textContent =
+              "No QR codes yet";
+            return;
+          }
+          table.style.display = "table";
+          body.innerHTML = qrCodes
+            .map(
+              (q) => `
+          <tr>
+            <td>${escape(q.type || "personal")}</td>
+            <td>${escape(q.title || q.name || "—")}</td>
+            <td>${escape(q.phone || "—")}</td>
+            <td>${new Date(q.created_at).toLocaleDateString()}</td>
+            <td>
+              <a href="${q.url}" target="_blank" class="btn btn-sm btn-info" style="text-decoration:none">View</a>
+              <button class="btn btn-sm btn-danger" onclick="deleteQR('${q.id}', this)">Delete</button>
+            </td>
+          </tr>
+        `,
+            )
+            .join("");
+        } catch (e) {
+          document.getElementById("qrsLoading").textContent =
+            "Error: " + e.message;
+        }
+      }
+
+      // ─── Notifications ──────────────────────────────
+      async function loadNotifications() {
+        try {
+          const { notifications } = await apiCall("listNotifications");
+          document.getElementById("notifsLoading").style.display = "none";
+          const table = document.getElementById("notifsTable");
+          const body = document.getElementById("notifsBody");
+          if (!notifications.length) {
+            document.getElementById("notifsLoading").style.display = "block";
+            document.getElementById("notifsLoading").textContent =
+              "No notifications sent yet";
+            return;
+          }
+          table.style.display = "table";
+          body.innerHTML = notifications
+            .map(
+              (n) => `
+          <tr>
+            <td><span class="badge badgeCredits">${n.type}</span></td>
+            <td>${escape(n.title)}</td>
+            <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escape(n.body)}</td>
+            <td>${new Date(n.created_at).toLocaleDateString()}</td>
+            <td><button class="btn btn-sm btn-danger" onclick="deleteNotification('${n.id}', this)">Delete</button></td>
+          </tr>
+        `,
+            )
+            .join("");
+        } catch (e) {
+          document.getElementById("notifsLoading").textContent =
+            "Error: " + e.message;
+        }
+      }
+
+      // ─── Push ───────────────────────────────────────
+      async function loadPush() {
+        try {
+          const { users } = await apiCall("listUsers");
+          pushUsers = users;
+          const withToken = users.filter((u) => u.fcmToken);
+          document.getElementById("pushTokenCount").textContent =
+            withToken.length;
+          document.getElementById("pushUserCount").textContent = users.length;
+          renderPushUsers(users);
+        } catch (e) {
+          document.getElementById("pushLoading").textContent =
+            "Error: " + e.message;
+        }
+      }
+
+      function renderPushUsers(users) {
+        document.getElementById("pushLoading").style.display = "none";
+        const table = document.getElementById("pushTable");
+        const body = document.getElementById("pushBody");
+
+        if (!users.length) {
+          document.getElementById("pushLoading").style.display = "block";
+          document.getElementById("pushLoading").textContent = "No users found";
+          return;
+        }
+
+        table.style.display = "table";
+        body.innerHTML = users
+          .map((u) => {
+            const tokenShort = u.fcmToken
+              ? escape(u.fcmToken.substring(0, 20)) + "…"
+              : '<span style="color:#94a3b8">– no token –</span>';
+            const tokenBadge = u.fcmToken
+              ? '<span style="color:#16a34a;font-weight:700">● Active</span>'
+              : '<span style="color:#94a3b8">● Inactive</span>';
+
+            return `
+          <tr>
+            <td><div class="userCell"><span class="avatar">${initials(u.name || u.email)}</span>${escape(u.name || "—")}</div></td>
+            <td>${escape(u.email)}</td>
+            <td style="font-family: monospace; font-size: 12px; color: #475569">${tokenShort}<br/>${tokenBadge}</td>
+            <td>
+              <button class="btn btn-sm btn-success" onclick="copyToken('${escape(u.fcmToken || "")}')" ${!u.fcmToken ? "disabled" : ""}>Copy</button>
+              <button class="btn btn-sm btn-purple" onclick="openPushForUser('${u.id}')" ${!u.fcmToken ? "disabled" : ""}>Send Push</button>
+            </td>
+          </tr>
+        `;
+          })
+          .join("");
+      }
+
+      function filterPushUsers(q) {
+        const query = q.trim().toLowerCase();
+        if (!query) return renderPushUsers(pushUsers);
+        const filtered = pushUsers.filter(
+          (u) =>
+            (u.name || "").toLowerCase().includes(query) ||
+            (u.email || "").toLowerCase().includes(query) ||
+            (u.fcmToken || "").toLowerCase().includes(query),
+        );
+        renderPushUsers(filtered);
+      }
+
+      function openPushComposer() {
+        pushTargetUserId = null;
+        document.getElementById("pushRecipient").textContent =
+          "Broadcast — will send to all users with a valid FCM token.";
+        document.getElementById("pTitle").value = "";
+        document.getElementById("pBody").value = "";
+        document.getElementById("pushModal").classList.add("open");
+      }
+
+      function openPushForUser(userId) {
+        const u = pushUsers.find((x) => x.id === userId);
+        if (!u) return;
+        if (!u.fcmToken) {
+          toast("User has no FCM token", "error");
+          return;
+        }
+        pushTargetUserId = userId;
+        document.getElementById("pushRecipient").textContent =
+          `To: ${u.name || u.email}`;
+        document.getElementById("pTitle").value = "";
+        document.getElementById("pBody").value = "";
+        document.getElementById("pushModal").classList.add("open");
+      }
+
+      async function sendPush() {
+        const title = document.getElementById("pTitle").value.trim();
+        const body = document.getElementById("pBody").value.trim();
+
+        if (!title || !body) {
+          toast("Title and message are required", "error");
+          return;
+        }
+
+        try {
+          const payload = pushTargetUserId
+            ? {
+                action: "sendPushNotification",
+                userId: pushTargetUserId,
+                title,
+                body,
+              }
+            : { action: "sendPushNotification", broadcast: true, title, body };
+
+          const res = await fetch(API, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${adminToken}`,
+            },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Send failed");
+
+          closeModal("pushModal");
+          if (pushTargetUserId) {
+            toast("Push sent", "success");
+          } else {
+            toast(
+              `Sent to ${data.sent} device${data.sent === 1 ? "" : "s"}`,
+              "success",
+            );
+          }
+          loadPush();
+        } catch (e) {
+          toast(e.message, "error");
+        }
+      }
+
+      function copyToken(token) {
+        if (!token) return;
+        navigator.clipboard.writeText(token).then(
+          () => toast("Token copied", "success"),
+          () => toast("Copy failed", "error"),
+        );
+      }
+
+      // ─── User actions ───────────────────────────────
+      async function quickAdd(userId, amount) {
+        try {
+          await apiCall("addCredits", { userId, amount });
+          toast(`Added ${amount} credits`, "success");
+          loadUsers();
+          loadStats();
+        } catch (e) {
+          toast(e.message, "error");
+        }
+      }
+
+      function openCreateUser() {
+        editingUserId = null;
+        document.getElementById("userModalTitle").textContent = "New User";
+        document.getElementById("userModalSub").textContent =
+          "Create a new account";
+        document.getElementById("uName").value = "";
+        document.getElementById("uEmail").value = "";
+        document.getElementById("uPassword").value = "";
+        document.getElementById("uCredits").value = 100;
+        document.getElementById("uPlan").value = "free";
+        document.getElementById("uStatus").value = "active";
+        document.getElementById("passwordField").style.display = "block";
+        document.getElementById("userModal").classList.add("open");
+      }
+
+      function openEditUser(userId) {
+        const u = allUsers.find((x) => x.id === userId);
+        if (!u) return;
+        editingUserId = userId;
+        document.getElementById("userModalTitle").textContent = "Edit User";
+        document.getElementById("userModalSub").textContent = u.email;
+        document.getElementById("uName").value = u.name || "";
+        document.getElementById("uEmail").value = u.email || "";
+        document.getElementById("uPassword").value = "";
+        document.getElementById("uCredits").value = u.credits;
+        document.getElementById("uPlan").value = u.plan || "free";
+        document.getElementById("uStatus").value = u.status || "active";
+        document.getElementById("passwordField").style.display = "none";
+        document.getElementById("userModal").classList.add("open");
+      }
+
+      async function saveUser() {
+        const name = document.getElementById("uName").value.trim();
+        const email = document.getElementById("uEmail").value.trim();
+        const password = document.getElementById("uPassword").value;
+        const credits =
+          parseInt(document.getElementById("uCredits").value, 10) || 0;
+        const plan = document.getElementById("uPlan").value;
+        const status = document.getElementById("uStatus").value;
+
+        if (!name || !email) return toast("Name and email required", "error");
+
+        try {
+          if (editingUserId) {
+            await apiCall("updateUser", {
+              userId: editingUserId,
+              name,
+              email,
+              credits,
+              plan,
+              status,
+            });
+            toast("User updated", "success");
+          } else {
+            if (!password || password.length < 6) {
+              return toast("Password must be 6+ characters", "error");
+            }
+            await apiCall("createUser", { name, email, password, credits });
+            toast("User created", "success");
+          }
+          closeModal("userModal");
+          loadUsers();
+          loadStats();
+        } catch (e) {
+          toast(e.message, "error");
+        }
+      }
+
+      async function deleteUser(userId, email, btnEl) {
+        if (
+          !confirm(
+            `Delete ${email}?\n\nThis removes their account and all QR codes.`,
+          )
+        )
+          return;
+
+        const originalText = btnEl ? btnEl.textContent : "Delete";
+        if (btnEl) {
+          btnEl.disabled = true;
+          btnEl.textContent = "Deleting…";
+        }
+
+        try {
+          await apiCall("deleteUser", { userId });
+          toast("User deleted", "success");
+          loadUsers();
+          loadQRs();
+          loadStats();
+        } catch (e) {
+          toast(e.message, "error");
+        } finally {
+          if (btnEl) {
+            btnEl.disabled = false;
+            btnEl.textContent = originalText;
+          }
+        }
+      }
+
+      async function deleteQR(qrId, btnEl) {
+        if (!confirm("Delete this QR code?")) return;
+
+        const originalText = btnEl ? btnEl.textContent : "Delete";
+        if (btnEl) {
+          btnEl.disabled = true;
+          btnEl.textContent = "Deleting…";
+        }
+
+        try {
+          await apiCall("deleteQR", { qrId });
+          toast("QR deleted", "success");
+          loadQRs();
+        } catch (e) {
+          toast(e.message, "error");
+        } finally {
+          if (btnEl) {
+            btnEl.disabled = false;
+            btnEl.textContent = originalText;
+          }
+        }
+      }
+
+      async function deleteNotification(notifId, btnEl) {
+        if (!confirm("Delete this notification?")) return;
+
+        const originalText = btnEl ? btnEl.textContent : "Delete";
+        if (btnEl) {
+          btnEl.disabled = true;
+          btnEl.textContent = "Deleting…";
+        }
+
+        try {
+          await apiCall("deleteNotification", { notifId });
+          toast("Notification deleted", "success");
+          loadNotifications();
+        } catch (e) {
+          toast(e.message, "error");
+        } finally {
+          if (btnEl) {
+            btnEl.disabled = false;
+            btnEl.textContent = originalText;
+          }
+        }
+      }
+
+      // ─── Send Notification ──────────────────────────
+      function openSendNotification() {
+        document.getElementById("nRecipient").value = "broadcast";
+        document.getElementById("nUserField").style.display = "none";
+        document.getElementById("nTitle").value = "";
+        document.getElementById("nBody").value = "";
+        document.getElementById("nType").value = "info";
+        document.getElementById("notifModal").classList.add("open");
+      }
+
+      function openNotifForUser(email) {
+        openSendNotification();
+        document.getElementById("nRecipient").value = "single";
+        document.getElementById("nUserField").style.display = "block";
+        document.getElementById("nUserEmail").value = email;
+      }
+
+      document.addEventListener("change", (e) => {
+        if (e.target.id === "nRecipient") {
+          document.getElementById("nUserField").style.display =
+            e.target.value === "single" ? "block" : "none";
+        }
+      });
+
+      async function sendNotification() {
+        const recipient = document.getElementById("nRecipient").value;
+        const email = document.getElementById("nUserEmail").value.trim();
+        const title = document.getElementById("nTitle").value.trim();
+        const body = document.getElementById("nBody").value.trim();
+        const type = document.getElementById("nType").value;
+
+        if (!title || !body)
+          return toast("Title and message required", "error");
+
+        try {
+          if (recipient === "broadcast") {
+            await apiCall("sendNotification", {
+              title,
+              body,
+              type,
+              broadcast: true,
+            });
+            toast("Broadcast sent to all users", "success");
+          } else {
+            const u = allUsers.find((x) => x.email === email);
+            if (!u) return toast("User not found", "error");
+            await apiCall("sendNotification", {
+              userId: u.id,
+              title,
+              body,
+              type,
+            });
+            toast("Notification sent", "success");
+          }
+          closeModal("notifModal");
+          loadNotifications();
+        } catch (e) {
+          toast(e.message, "error");
+        }
+      }
+
+      // ─── Support ────────────────────────────────────
+      async function loadSupportTickets() {
+        const status = document.getElementById("supportFilter").value;
+        const list = document.getElementById("supportList");
+        list.innerHTML = '<div class="loading">Loading…</div>';
+
+        try {
+          const { tickets } = await apiCall("listSupportTickets", { status });
+
+          if (!tickets?.length) {
+            list.innerHTML = '<div class="empty">No tickets found.</div>';
+            return;
+          }
+
+          list.innerHTML = tickets
+            .map(
+              (t) => `
+      <div style="background:#fff; border-radius:16px; padding:20px 24px; margin-bottom:12px; box-shadow: 0 4px 20px rgba(15,23,42,0.06); border-left: 4px solid ${
+        t.status === "open"
+          ? "#dc2626"
+          : t.status === "in_progress"
+            ? "#f59e0b"
+            : "#16a34a"
+      };">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+          <div style="min-width:0; flex:1;">
+            <div style="font-size:16px; font-weight:800; color:#0f172a;">${escape(t.name)}</div>
+            <div style="font-size:13px; color:#64748b; margin-top:4px;">
+              <a href="mailto:${escape(t.email)}" style="color:#2563eb; text-decoration:none;">${escape(t.email)}</a>
+              ${t.topic ? ` • ${escape(t.topic)}` : ""}
+              • ${new Date(t.created_at).toLocaleString("en-IN")}
+            </div>
+          </div>
+          <span style="font-size:11px; font-weight:800; padding:4px 10px; border-radius:999px; text-transform:uppercase; letter-spacing:0.5px; background:${
+            t.status === "open"
+              ? "#fee2e2"
+              : t.status === "in_progress"
+                ? "#fef3c7"
+                : "#dcfce7"
+          }; color:${
+            t.status === "open"
+              ? "#991b1b"
+              : t.status === "in_progress"
+                ? "#92400e"
+                : "#166534"
+          };">${t.status.replace("_", " ")}</span>
+        </div>
+        <p style="margin:14px 0; white-space:pre-wrap; color:#334155; font-size:14px; line-height:1.6;">${escape(t.message)}</p>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          ${
+            t.status !== "in_progress" && t.status !== "resolved"
+              ? `<button class="btn btn-sm btn-warning" onclick="updateTicketStatus('${t.id}', 'in_progress')">Mark In Progress</button>`
+              : ""
+          }
+          ${
+            t.status !== "resolved"
+              ? `<button class="btn btn-sm btn-success" onclick="updateTicketStatus('${t.id}', 'resolved')">Mark Resolved</button>`
+              : ""
+          }
+          <button class="btn btn-sm btn-danger" onclick="deleteTicket('${t.id}', this)">Delete</button>
+        </div>
+      </div>
+    `,
+            )
+            .join("");
+        } catch (err) {
+          list.innerHTML = `<div class="empty" style="color:#dc2626;">Error: ${escape(err.message)}</div>`;
+        }
+      }
+
+      async function updateTicketStatus(id, status) {
+        try {
+          await apiCall("updateSupportTicket", { id, status });
+          toast("Ticket updated", "success");
+          loadSupportTickets();
+        } catch (e) {
+          toast(e.message, "error");
+        }
+      }
+
+      async function deleteTicket(id, btnEl) {
+        if (!confirm("Delete this ticket permanently?")) return;
+        const original = btnEl ? btnEl.textContent : "Delete";
+        if (btnEl) {
+          btnEl.disabled = true;
+          btnEl.textContent = "Deleting…";
+        }
+        try {
+          await apiCall("deleteSupportTicket", { id });
+          toast("Ticket deleted", "success");
+          loadSupportTickets();
+        } catch (e) {
+          toast(e.message, "error");
+        } finally {
+          if (btnEl) {
+            btnEl.disabled = false;
+            btnEl.textContent = original;
+          }
+        }
+      }
+
+      // ─── Streaks ────────────────────────────────────
+      async function loadStreaks() {
+        try {
+          const stats = await apiCall("activityStats");
+          document.getElementById("statActiveToday").textContent =
+            stats.activeToday;
+          document.getElementById("statActiveWeek").textContent =
+            stats.activeThisWeek;
+          document.getElementById("statTotalCheckIns").textContent =
+            stats.totalCheckIns;
+
+          const { streaks } = await apiCall("listStreaks");
+          document.getElementById("streaksLoading").style.display = "none";
+
+          if (!streaks || !streaks.length) {
+            document.getElementById("streaksLoading").style.display = "block";
+            document.getElementById("streaksLoading").textContent =
+              "No streak data yet";
+            return;
+          }
+
+          document.getElementById("streaksTable").style.display = "table";
+          document.getElementById("streaksBody").innerHTML = streaks
+            .map(
+              (s) => `
+      <tr>
+        <td><div class="userCell"><span class="avatar">${initials(s.name || s.email)}</span>${escape(s.name || "—")}</div></td>
+        <td>${escape(s.email || "—")}</td>
+        <td><span class="badge badgeCredits">🔥 ${s.current_streak}</span></td>
+        <td>${s.longest_streak}</td>
+        <td>${s.total_check_ins}</td>
+        <td>${s.last_check_in || "—"}</td>
+      </tr>
+    `,
+            )
+            .join("");
+        } catch (e) {
+          toast(e.message, "error");
+        }
+      }
+
+      // ─── Spins ──────────────────────────────────────
+      async function loadSpins() {
+        try {
+          const stats = await apiCall("spinStats");
+          document.getElementById("spinStatToday").textContent =
+            stats.spinsToday;
+          document.getElementById("spinStatWeek").textContent =
+            stats.spinsThisWeek;
+          document.getElementById("spinStatCredits").textContent =
+            stats.totalCreditsWon;
+          document.getElementById("spinStatWinRate").textContent =
+            stats.winRate + "%";
+
+          const { spins } = await apiCall("listSpins");
+          document.getElementById("spinsLoading").style.display = "none";
+
+          if (!spins || !spins.length) {
+            document.getElementById("spinsLoading").style.display = "block";
+            document.getElementById("spinsLoading").textContent =
+              "No spins yet";
+            return;
+          }
+
+          document.getElementById("spinsTable").style.display = "table";
+          document.getElementById("spinsBody").innerHTML = spins
+            .map(
+              (s) => `
+      <tr>
+        <td><div class="userCell"><span class="avatar">${initials(s.name || s.email)}</span>${escape(s.name || "—")}</div></td>
+        <td>${escape(s.email || "—")}</td>
+        <td><span class="badge badgeCredits">${escape(s.prize_label)}</span></td>
+        <td>+${s.prize_amount}</td>
+        <td>${new Date(s.created_at).toLocaleDateString()}</td>
+      </tr>
+    `,
+            )
+            .join("");
+        } catch (e) {
+          toast(e.message, "error");
+        }
+      }
+
+      // ─── Notes ──────────────────────────────────────
+      async function loadNotes() {
+        try {
+          const stats = await apiCall("notesStats");
+          document.getElementById("notesTotal").textContent = stats.totalNotes;
+          document.getElementById("notesUsers").textContent = stats.uniqueUsers;
+          document.getElementById("notesToday").textContent = stats.notesToday;
+
+          const { notes } = await apiCall("listNotes");
+          document.getElementById("notesLoading").style.display = "none";
+
+          if (!notes || !notes.length) {
+            document.getElementById("notesLoading").style.display = "block";
+            document.getElementById("notesLoading").textContent =
+              "No notes yet";
+            return;
+          }
+
+          document.getElementById("notesTable").style.display = "table";
+          document.getElementById("notesBody").innerHTML = notes
+            .map(
+              (n) => `
+      <tr>
+        <td><div class="userCell"><span class="avatar">${initials(n.user_name || n.user_email)}</span>${escape(n.user_name || "—")}</div></td>
+        <td style="font-weight:700;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escape(n.title || "Untitled")}</td>
+        <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#64748b">${escape(n.body || "")}</td>
+        <td>${(n.tags || []).map((t) => `<span class="badge badgeCredits" style="margin-right:4px">${escape(t)}</span>`).join("")}</td>
+        <td>${new Date(n.updated_at).toLocaleDateString()}</td>
+      </tr>
+    `,
+            )
+            .join("");
+        } catch (e) {
+          toast(e.message, "error");
+        }
+      }
+
+      // ─── Tasks ──────────────────────────────────────
+      async function loadTasks() {
+        try {
+          const stats = await apiCall("tasksStats");
+          document.getElementById("tasksTotal").textContent = stats.totalTasks;
+          document.getElementById("tasksCompleted").textContent =
+            stats.completedTasks;
+          document.getElementById("tasksRate").textContent =
+            stats.completionRate + "%";
+          document.getElementById("tasksUsers").textContent = stats.uniqueUsers;
+
+          const { tasks } = await apiCall("listTasks");
+          document.getElementById("tasksLoading").style.display = "none";
+
+          if (!tasks || !tasks.length) {
+            document.getElementById("tasksLoading").style.display = "block";
+            document.getElementById("tasksLoading").textContent =
+              "No tasks yet";
+            return;
+          }
+
+          document.getElementById("tasksTable").style.display = "table";
+          document.getElementById("tasksBody").innerHTML = tasks
+            .map(
+              (t) => `
+      <tr>
+        <td><div class="userCell"><span class="avatar">${initials(t.user_name || t.user_email)}</span>${escape(t.user_name || "—")}</div></td>
+        <td style="font-weight:700;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escape(t.title || "—")}</td>
+        <td>${t.due_date || "—"}</td>
+        <td>${t.recurring === "none" ? "—" : t.recurring}</td>
+        <td><span class="badge ${t.done ? "badgeActive" : "badgeCredits"}">${t.done ? "✓ Done" : "Open"}</span></td>
+      </tr>
+    `,
+            )
+            .join("");
+        } catch (e) {
+          toast(e.message, "error");
+        }
+      }
+
+      // ─── Reminders ──────────────────────────────────
+      async function loadReminders() {
+        try {
+          const stats = await apiCall("remindersStats");
+          document.getElementById("remTotal").textContent =
+            stats.totalReminders;
+          document.getElementById("remActive").textContent =
+            stats.activeReminders;
+          document.getElementById("remUpcoming").textContent =
+            stats.upcomingReminders;
+          document.getElementById("remUsers").textContent = stats.uniqueUsers;
+
+          const { reminders } = await apiCall("listReminders");
+          document.getElementById("remLoading").style.display = "none";
+
+          if (!reminders || !reminders.length) {
+            document.getElementById("remLoading").style.display = "block";
+            document.getElementById("remLoading").textContent =
+              "No reminders yet";
+            return;
+          }
+
+          document.getElementById("remTable").style.display = "table";
+          document.getElementById("remBody").innerHTML = reminders
+            .map(
+              (r) => `
+      <tr>
+        <td><div class="userCell"><span class="avatar">${initials(r.user_name || r.user_email)}</span>${escape(r.user_name || "—")}</div></td>
+        <td style="font-weight:700">${escape(r.title || "—")}</td>
+        <td>${new Date(r.remind_at).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}</td>
+        <td>${r.repeat_rule === "none" ? "—" : r.repeat_rule}</td>
+        <td><span class="badge ${r.enabled ? "badgeActive" : "badgeFree"}">${r.enabled ? "Active" : "Off"}</span></td>
+      </tr>
+    `,
+            )
+            .join("");
+        } catch (e) {
+          toast(e.message, "error");
+        }
+      }
+
+      // ─── Earnings ───────────────────────────────────
+      async function loadEarnings() {
+        try {
+          const data = await apiCall("earningsOverview");
+          document.getElementById("earnLifetime").textContent =
+            data.lifetimeCredits;
+          document.getElementById("earnToday").textContent = data.todayCredits;
+          document.getElementById("earnUsers").textContent = data.uniqueUsers;
+          document.getElementById("earnTop").textContent =
+            data.topEarners[0]?.credits || 0;
+          document.getElementById("earnStreak").textContent =
+            data.bySource.streak;
+          document.getElementById("earnSpin").textContent = data.bySource.spin;
+          document.getElementById("earnAch").textContent =
+            data.bySource.achievement;
+
+          document.getElementById("earnLoading").style.display = "none";
+          if (!data.topEarners.length) {
+            document.getElementById("earnLoading").style.display = "block";
+            document.getElementById("earnLoading").textContent =
+              "No earnings yet";
+            return;
+          }
+
+          document.getElementById("earnTable").style.display = "table";
+          document.getElementById("earnBody").innerHTML = data.topEarners
+            .map(
+              (u) => `
+      <tr>
+        <td><div class="userCell"><span class="avatar">${initials(u.name || u.email)}</span>${escape(u.name || "—")}</div></td>
+        <td>${escape(u.email || "—")}</td>
+        <td><span class="badge badgeCredits">💰 ${u.credits}</span></td>
+      </tr>
+    `,
+            )
+            .join("");
+        } catch (e) {
+          toast(e.message, "error");
+        }
+      }
+
+      // ─── Achievements ───────────────────────────────
+      async function loadAchievements() {
+        try {
+          const stats = await apiCall("achievementsStats");
+          document.getElementById("achTotal").textContent = stats.totalUnlocks;
+          document.getElementById("achUsers").textContent = stats.uniqueUsers;
+          document.getElementById("achCount").textContent = stats.badgeCount;
+          document.getElementById("achTop").textContent = stats.topBadge
+            ? `${stats.topBadge.emoji} ${stats.topBadge.title}`
+            : "—";
+
+          const { achievements } = await apiCall("listAchievements");
+          document.getElementById("achLoading").style.display = "none";
+
+          if (!achievements || !achievements.length) {
+            document.getElementById("achLoading").style.display = "block";
+            document.getElementById("achLoading").textContent =
+              "No badges configured";
+            return;
+          }
+
+          document.getElementById("achTable").style.display = "table";
+          document.getElementById("achBody").innerHTML = achievements
+            .map(
+              (b) => `
+      <tr>
+        <td style="font-weight:800">${b.emoji} ${escape(b.title)}</td>
+        <td style="font-family:monospace;font-size:12px;color:#64748b">${escape(b.key)}</td>
+        <td><span class="badge badgeCredits">${escape(b.category)}</span></td>
+        <td>+${b.reward_credits}</td>
+        <td><span class="badge badgeActive">${b.unlock_count}</span></td>
+      </tr>
+    `,
+            )
+            .join("");
+        } catch (e) {
+          toast(e.message, "error");
+        }
+      }
+
+      // ─── Activity ───────────────────────────────────
+      async function loadActivity() {
+        try {
+          const stats = await apiCall("activityStats");
+          document.getElementById("actDau").textContent = stats.activeToday;
+          document.getElementById("actWau").textContent = stats.activeThisWeek;
+          document.getElementById("actMau").textContent =
+            stats.activeThisMonth || "–";
+
+          const stickiness =
+            stats.activeThisMonth && stats.activeToday
+              ? Math.round((stats.activeToday / stats.activeThisMonth) * 100) +
+                "%"
+              : "–";
+          document.getElementById("actStick").textContent = stickiness;
+
+          const events = await apiCall("activityLogStats");
+          const featuresEl = document.getElementById("actFeatures");
+          featuresEl.style.display = "none";
+          featuresEl.insertAdjacentHTML(
+            "afterend",
+            `
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Events (30d)</th>
+              <th>Unique Users</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${(events.byFeature || [])
+              .map(
+                (f) => `
+              <tr>
+                <td style="font-weight:700">${f.emoji || ""} ${escape(f.label)}</td>
+                <td>${f.count}</td>
+                <td>${f.users}</td>
+              </tr>
+            `,
+              )
+              .join("")}
+          </tbody>
+        </table>
+      </div>
+      `,
+          );
+
+          const chartEl = document.getElementById("actChart");
+          chartEl.style.display = "none";
+          const maxChart = Math.max(
+            ...events.dailyCounts.map((d) => d.count),
+            1,
+          );
+          chartEl.parentElement.insertAdjacentHTML(
+            "beforeend",
+            `
+      <div class="activityChart">
+        <div class="chartRow">
+          ${events.dailyCounts
+            .map((d) => {
+              const h = (d.count / maxChart) * 120;
+              const isEmpty = d.count === 0;
+              return `
+              <div class="chartBar">
+                <div class="chartBarValue">${d.count || ""}</div>
+                <div class="chartBarFill ${isEmpty ? "empty" : ""}" style="height: ${Math.max(h, 4)}px"></div>
+                <div class="chartBarDay">${new Date(d.date).toLocaleDateString("en-US", { weekday: "narrow" })}</div>
+              </div>
+              `;
+            })
+            .join("")}
+        </div>
+      </div>
+    `,
+          );
+        } catch (e) {
+          toast(e.message, "error");
+        }
+      }
+
+      // ─── Modals ─────────────────────────────────────
+      function closeModal(id) {
+        document.getElementById(id).classList.remove("open");
+      }
+      document.querySelectorAll(".modal").forEach((m) => {
+        m.addEventListener("click", (e) => {
+          if (e.target === m) m.classList.remove("open");
+        });
+      });
+
+      // ─── Utilities ──────────────────────────────────
+      function initials(str) {
+        if (!str) return "?";
+        return str
+          .split(" ")
+          .filter(Boolean)
+          .slice(0, 2)
+          .map((w) => w[0].toUpperCase())
+          .join("");
+      }
+
+      function escape(str) {
+        if (str === null || str === undefined) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      let toastTimer;
+      function toast(msg, kind = "") {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.className = "toast show " + kind;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          t.className = "toast " + kind;
+        }, 2500);
+      }
+    </script>
+  </body>
+</html>

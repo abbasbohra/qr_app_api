@@ -1,0 +1,28 @@
+[build]
+  functions = "netlify/functions"
+  publish = "."
+
+[functions]
+  node_bundler = "esbuild"
+# ── Root → Admin panel ─────────────────────────────────
+[[redirects]]
+  from = "/"
+  to = "/admin"
+  status = 302
+# ── Admin panel (served as a static file) ──────────────
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+# ── API → Netlify Functions ────────────────────────────
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# ── QR viewer (HTML mode — old QRs) ────────────────────
+[[redirects]]
+  from = "/u/*"
+  to = "/.netlify/functions/qr-view/:splat"
+  status = 200
