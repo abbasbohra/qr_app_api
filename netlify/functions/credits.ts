@@ -60,12 +60,12 @@ export const handler: Handler = async (event) => {
       await supabase.from("profiles").insert({
         id: userId,
         name: "",
-        credits: 100,
+        credits: 10,
       });
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({ credits: 100 }),
+        body: JSON.stringify({ credits: 10 }),
       };
     }
 

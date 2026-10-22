@@ -197,7 +197,7 @@ export const handler: Handler = async (event) => {
       name,
       email,
       phone,
-      credits: 100,
+      credits: 10,
       plan: "free",
       status: "active",
       fcm_token: fcmToken || null,
@@ -215,8 +215,8 @@ export const handler: Handler = async (event) => {
       },
       {
         user_id: data.user.id,
-        title: "🎁 100 free credits added",
-        body: "You've received 100 free credits to get started. Each QR costs 1 credit. Watch a short ad anytime to earn more.",
+        title: "🎁 10 free credits added",
+        body: "You've received 10 free credits to get started. Each QR costs 1 credit. Watch a short ad anytime to earn more.",
         type: "promo",
         is_read: false,
         is_broadcast: false,
@@ -237,9 +237,9 @@ export const handler: Handler = async (event) => {
           token: fcmToken,
           notification: {
             title: "🎉 Welcome to QR Profile!",
-            body: "100 free credits are waiting for you. Tap to create your first QR.",
+            body: "10 free credits are waiting for you. Tap to create your first QR.",
           },
-          data: { type: "welcome", credits: "100" },
+          data: { type: "welcome", credits: "10" },
           android: {
             priority: "high",
             notification: {
@@ -279,7 +279,7 @@ export const handler: Handler = async (event) => {
           access_token: session.session?.access_token,
           refresh_token: session.session?.refresh_token,
         },
-        credits: 100,
+        credits: 10,
       }),
     };
   }
@@ -333,7 +333,7 @@ export const handler: Handler = async (event) => {
         name: metaName,
         email: data.user.email,
         phone: metaPhone,
-        credits: 100,
+        credits: 10,
         plan: "free",
         status: "active",
         fcm_token: fcmToken || null,
@@ -353,7 +353,7 @@ export const handler: Handler = async (event) => {
             access_token: data.session?.access_token,
             refresh_token: data.session?.refresh_token,
           },
-          credits: 100,
+          credits: 10,
         }),
       };
     }
@@ -380,7 +380,7 @@ export const handler: Handler = async (event) => {
           access_token: data.session?.access_token,
           refresh_token: data.session?.refresh_token,
         },
-        credits: profile.credits ?? 100,
+        credits: profile.credits ?? 10,
       }),
     };
   }

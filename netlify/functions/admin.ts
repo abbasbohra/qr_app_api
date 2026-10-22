@@ -423,7 +423,7 @@ export const handler: Handler = async (event) => {
 
   // ─── CREATE USER ────────────────────────────────────────
   if (action === "createUser") {
-    const { email, password, name, credits = 100 } = body;
+    const { email, password, name, credits = 10 } = body;
 
     if (!email || !password || !name) {
       return {
