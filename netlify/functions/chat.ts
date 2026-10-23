@@ -40,7 +40,7 @@ export const handler: Handler = async (event) => {
       },
       body: JSON.stringify({
         // Change the model to a Groq-supported model
-        model: "llama-3.3-70b-versatile", 
+        model: "openai/gpt-oss-120b", 
         messages: [
           { 
             role: "system", 
