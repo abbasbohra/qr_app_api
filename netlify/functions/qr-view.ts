@@ -2,6 +2,7 @@ import type { Handler } from "@netlify/functions";
 import { createClient } from "@supabase/supabase-js";
 
 // Resolve both direct function URLs and public URLs rewritten by Netlify.
+const VIEWER_BUILD = "studio-v3.1";
 const QR_ID_KEYS = ["id", "qrId", "qr_id"];
 const QR_ROUTES = new Set(["qr", "qr-view", "qrview", "q"]);
 
@@ -74,6 +75,24 @@ export const handler: Handler = async (event) => {
         "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       },
       body: "",
+    };
+  }
+
+  // Public deployment check: no QR ID or database access required.
+  let check = event.queryStringParameters?.viewer_check === "1";
+  if (!check && event.rawUrl) {
+    try { check = new URL(event.rawUrl).searchParams.get("viewer_check") === "1"; } catch { /* ignore */ }
+  }
+  if (event.httpMethod === "GET" && check) {
+    return {
+      statusCode: 200,
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "no-store",
+        "Netlify-CDN-Cache-Control": "no-store",
+        "X-TapCard-Viewer": VIEWER_BUILD,
+      },
+      body: JSON.stringify({ viewer: "TapCard QR Viewer", version: VIEWER_BUILD, status: "active" }),
     };
   }
 
@@ -203,7 +222,8 @@ export const handler: Handler = async (event) => {
     headers: {
       "Content-Type": "text/html; charset=utf-8",
       "Cache-Control": "no-store",
-      "X-TapCard-Viewer": "studio-v3",
+      "Netlify-CDN-Cache-Control": "no-store",
+      "X-TapCard-Viewer": VIEWER_BUILD,
     },
     body: buildViewerHTML(payload),
   };
@@ -416,7 +436,7 @@ function displayName(p:QRData,type:string,title:string) {
   const priority:Record<string,string[]>={pet_id:['petName','name','ownerName'], product:['productName','name'], vehicle:['vehicleNumber','name','ownerName'], wifi:['ssid','networkName','name'], hotel_menu:['businessName','name','company'], restaurant:['businessName','name','company'], local_shop:['businessName','name','company','owner'], appointment:['businessName','name','serviceType'], family_tree:['familyName','name','title'], event:['name','title'], custom:['title','name']};
   return scalar(get(p,...(priority[type]||['name','businessName','title','company'])))||scalar(title)||'QR profile';
 }
-function head(title:string,accent:string) {return `<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="${accent}"/><meta name="referrer" content="no-referrer"/><title>${esc(title)} | TapCard</title><link rel="icon" href="/logo.png"/><link rel="apple-touch-icon" href="/logo.png"/><style>${VIEWER_CSS}</style></head>`;}
+function head(title:string,accent:string) {return `<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><meta name="theme-color" content="${accent}"/><meta name="referrer" content="no-referrer"/><meta name="tapcard-viewer" content="${VIEWER_BUILD}"/><title>${esc(title)} | TapCard</title><link rel="icon" href="/logo.png"/><link rel="apple-touch-icon" href="/logo.png"/><style>${VIEWER_CSS}</style></head>`;}
 function brand(){return `<div class="brand"><span class="brand-mark"><img src="/logo.png" alt="" width="32" height="32"/><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 7h8v8H7zM17 7h8v8h-8zM7 17h8v8H7zM18 18h3v3h-3zM23 23h3v3h-3z" fill="none" stroke="currentColor" stroke-width="2"/></svg></span><span>TapCard<span class="brand-sub">Digital QR viewer</span></span></div>`;}
 function buildViewerHTML(payload: QRPayload) {
   const type=Object.prototype.hasOwnProperty.call(THEMES,payload.type)?payload.type:'custom', p=payload.data||{};
@@ -427,7 +447,7 @@ function buildViewerHTML(payload: QRPayload) {
   const feature=type==='medical'?get(p,'bloodGroup'):type==='upi_payment'?get(p,'amount'):type==='vehicle'?get(p,'vehicleNumber'):'';
   const hasFeature=filled(feature); const featureLabel=type==='medical'?'Blood group':type==='vehicle'?'Vehicle number':'Amount';
   const featureText=type==='upi_payment'?'₹ '+scalar(feature):scalar(feature);
-  return `${head(name,accent)}<body style="--accent:${accent};--tint:${tint}"><div class="shell"><header class="topbar">${brand()}<button type="button" class="share" id="share">${icon('share')}<span>Share card</span></button></header><main class="layout"><section class="profile" aria-label="QR card overview"><div class="hero"><div class="cover-art" aria-hidden="true"><span></span><span></span><span></span></div><div class="hero-top"><span class="type">${icon(ic)} ${esc(typeName)}</span><span class="hero-mark">TAPCARD / DIGITAL CARD</span></div><div class="identity"><div class="portrait"><span>${['personal','business','resume','social'].includes(type)?esc(initial):icon(ic)}</span>${photo?`<img src="${esc(photo)}" alt="${esc(name)}" referrerpolicy="no-referrer"/>`:''}</div><div class="identity-text"><h1>${esc(name)}</h1>${subtitle&&subtitle!==name?`<p class="subtitle">${esc(subtitle)}</p>`:''}${payload.title&&payload.title!==name&&payload.title!==typeName?`<p class="card-title">${esc(payload.title)}</p>`:''}</div>${hasFeature?`<div class="feature"><span>${esc(featureLabel)}</span><strong>${esc(featureText)}</strong></div>`:''}</div></div>${actions(p,type,name)}${type==='upi_payment'?'<div class="hint">Confirm the payee and amount in your UPI app before paying. You can also copy the UPI ID.</div>':''}</section><div class="content"><div class="content-title"><div><span class="eyebrow">THE DETAILS</span><h2>Explore this card</h2></div><p>Information shared by the card owner.</p></div>${details(p,type)}</div></main><footer class="footer"><span>Powered by <strong>TapCard</strong></span><span class="footer-version">STUDIO EDITION · V3</span></footer></div><div id="status" class="toast" role="status" aria-live="polite"></div><script>${VIEWER_SCRIPT}</script></body></html>`;
+  return `${head(name,accent)}<body style="--accent:${accent};--tint:${tint}"><div class="shell"><header class="topbar">${brand()}<button type="button" class="share" id="share">${icon('share')}<span>Share card</span></button></header><main class="layout"><section class="profile" aria-label="QR card overview"><div class="hero"><div class="cover-art" aria-hidden="true"><span></span><span></span><span></span></div><div class="hero-top"><span class="type">${icon(ic)} ${esc(typeName)}</span><span class="hero-mark">TAPCARD / DIGITAL CARD</span></div><div class="identity"><div class="portrait"><span>${['personal','business','resume','social'].includes(type)?esc(initial):icon(ic)}</span>${photo?`<img src="${esc(photo)}" alt="${esc(name)}" referrerpolicy="no-referrer"/>`:''}</div><div class="identity-text"><h1>${esc(name)}</h1>${subtitle&&subtitle!==name?`<p class="subtitle">${esc(subtitle)}</p>`:''}${payload.title&&payload.title!==name&&payload.title!==typeName?`<p class="card-title">${esc(payload.title)}</p>`:''}</div>${hasFeature?`<div class="feature"><span>${esc(featureLabel)}</span><strong>${esc(featureText)}</strong></div>`:''}</div></div>${actions(p,type,name)}${type==='upi_payment'?'<div class="hint">Confirm the payee and amount in your UPI app before paying. You can also copy the UPI ID.</div>':''}</section><div class="content"><div class="content-title"><div><span class="eyebrow">THE DETAILS</span><h2>Explore this card</h2></div><p>Information shared by the card owner.</p></div>${details(p,type)}</div></main><footer class="footer"><span>Powered by <strong>TapCard</strong></span><span class="footer-version">STUDIO EDITION · V3.1</span></footer></div><div id="status" class="toast" role="status" aria-live="polite"></div><script>${VIEWER_SCRIPT}</script></body></html>`;
 }
 function html404(title:string,message:string,status=404) {return {statusCode:status,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'},body:`${head(title,'#4338ca')}<body><div class="shell"><header class="topbar">${brand()}</header><main class="not-found"><span class="panel-icon">${icon('info')}</span><h1>${esc(title)}</h1><p>${esc(message)}</p></main><footer class="footer">Powered by TapCard</footer></div></body></html>`};}
 

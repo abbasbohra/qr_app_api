@@ -4,25 +4,35 @@
 
 [functions]
   node_bundler = "esbuild"
-# ── Root → Admin panel ─────────────────────────────────
+
+# Root → Admin panel
 [[redirects]]
   from = "/"
   to = "/admin"
   status = 302
-# ── Admin panel (served as a static file) ──────────────
+
+# Admin panel
 [[redirects]]
   from = "/admin"
   to = "/admin.html"
   status = 200
 
-# ── API → Netlify Functions ────────────────────────────
+# QR viewer — existing QR codes
+[[redirects]]
+  from = "/u/:id"
+  to = "/.netlify/functions/qr-view?id=:id"
+  status = 200
+  force = true
+
+# QR viewer — alternative route
+[[redirects]]
+  from = "/qr/:id"
+  to = "/.netlify/functions/qr-view?id=:id"
+  status = 200
+  force = true
+
+# API → Netlify Functions
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
-  status = 200
-
-# ── QR viewer (HTML mode — old QRs) ────────────────────
-[[redirects]]
-  from = "/u/*"
-  to = "/.netlify/functions/qr-view/:splat"
   status = 200
