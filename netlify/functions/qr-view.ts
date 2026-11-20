@@ -1,3 +1,302 @@
+import type { Handler } from "@netlify/functions";
+import { createClient } from "@supabase/supabase-js";
+
+// Resolve both direct function URLs and public URLs rewritten by Netlify.
+const QR_ID_KEYS = ["id", "qrId", "qr_id"];
+const QR_ROUTES = new Set(["qr", "qr-view", "qrview", "q"]);
+
+function cleanQrId(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const id = value.trim();
+  if (!id || id.length > 512 || /[\x00-\x1f\x7f/\\?#]/.test(id)) return undefined;
+  if (QR_ROUTES.has(id.toLowerCase()) || id === "." || id === "..") return undefined;
+  return id;
+}
+
+function idFromPath(path: string, routedOnly: boolean): string | undefined {
+  const parts = path.split(/[?#]/, 1)[0].split("/").filter(Boolean);
+  // The segment following a known route is the intended QR ID.
+  for (let i = 0; i < parts.length - 1; i++) {
+    if (QR_ROUTES.has(parts[i].toLowerCase()) && i === parts.length - 2) {
+      try { return cleanQrId(decodeURIComponent(parts[i + 1])); }
+      catch { return undefined; }
+    }
+  }
+  if (routedOnly || !parts.length || parts.includes(".netlify")) return undefined;
+  // Preserve the original viewer's last-path-segment fallback for legacy links.
+  try { return cleanQrId(decodeURIComponent(parts[parts.length - 1])); }
+  catch { return undefined; }
+}
+
+function resolveQrId(event: Parameters<Handler>[0]): string | undefined {
+  // Netlify queryStringParameters values are already URL-decoded.
+  for (const key of QR_ID_KEYS) {
+    const id = cleanQrId(event.queryStringParameters?.[key]);
+    if (id) return id;
+  }
+  let raw: URL | undefined;
+  if (event.rawUrl) {
+    try { raw = new URL(event.rawUrl); } catch { /* Fall back to event.path */ }
+  }
+  for (const key of QR_ID_KEYS) {
+    const id = cleanQrId(raw?.searchParams.get(key));
+    if (id) return id;
+  }
+  if (raw) {
+    const id = idFromPath(raw.pathname, true);
+    if (id) return id;
+  }
+  return idFromPath(event.path || "", true)
+    || (raw && idFromPath(raw.pathname, false))
+    || idFromPath(event.path || "", false);
+}
+
+function qrError(event: Parameters<Handler>[0], status: number, title: string, message: string) {
+  let json = event.queryStringParameters?.format === "json";
+  if (!json && event.rawUrl) {
+    try { json = new URL(event.rawUrl).searchParams.get("format") === "json"; } catch { /* ignore */ }
+  }
+  if (json) return {
+    statusCode: status,
+    headers: { "Content-Type": "application/json; charset=utf-8", "Access-Control-Allow-Origin": "*", "Cache-Control": "no-store" },
+    body: JSON.stringify({ error: title, message }),
+  };
+  return html404(title, message, status);
+}
+
+export const handler: Handler = async (event) => {
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 204,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      },
+      body: "",
+    };
+  }
+
+  const qrId = resolveQrId(event);
+  if (!qrId) return qrError(event, 400, "Invalid QR link", "This QR link is missing a valid QR ID. Please scan the original QR code again.");
+
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) {
+    console.error("[qr-view] Missing Supabase environment configuration");
+    return qrError(event, 503, "QR temporarily unavailable", "The QR service is not configured correctly. Please try again later.");
+  }
+  let supabase: ReturnType<typeof createClient>;
+  let qr;
+  try {
+    supabase = createClient(url, key);
+    const { data, error } = await supabase
+      .from("qr_codes")
+      .select("*")
+      .eq("id", qrId)
+      .maybeSingle();
+    if (error) {
+      console.error("[qr-view] Database lookup failed", { code: error.code, message: error.message });
+      if (error.code === "22P02") {
+        return qrError(event, 400, "Invalid QR link", "The QR ID is not in the format expected by the database.");
+      }
+      return qrError(event, 503, "QR temporarily unavailable", "We could not load this QR right now. Please try again later.");
+    }
+    if (!data) {
+      console.warn("[qr-view] No matching row in qr_codes");
+      return qrError(event, 404, "QR not found", "This QR code does not exist or may have been removed.");
+    }
+    qr = data;
+  } catch (error) {
+    console.error("[qr-view] Lookup exception", error instanceof Error ? error.message : "Unknown error");
+    return qrError(event, 503, "QR temporarily unavailable", "We could not connect to the QR service. Please try again later.");
+  }
+
+  const country =
+    (event.headers["x-country"] as string) ||
+    (event.headers["x-nf-geo-country"] as string) ||
+    null;
+  const userAgent = event.headers["user-agent"] || null;
+  const deviceType = /mobile/i.test(userAgent || "") ? "mobile" : "desktop";
+
+  (async () => {
+    try {
+      await supabase.from("qr_scans").insert({
+        qr_id: qr.id,
+        country,
+        device_type: deviceType,
+        user_agent: userAgent,
+      });
+      await supabase
+        .from("qr_codes")
+        .update({
+          scan_count: (qr.scan_count || 0) + 1,
+          last_scanned_at: new Date().toISOString(),
+        })
+        .eq("id", qr.id);
+    } catch (e) {
+      console.warn("scan log failed:", e);
+    }
+  })();
+
+  // Merge JSONB data + core columns
+  const d = qr.data || {};
+  const payload = {
+    type: qr.type || "personal",
+    title: qr.title || "Profile",
+    data: {
+      ...d,
+      name: qr.name || d.name || "",
+      phone: qr.phone || d.phone || "",
+      email: qr.email || d.email || "",
+      company: qr.company || d.company || "",
+      website: qr.website || d.website || "",
+      note: qr.note || d.note || "",
+      menuItems: (Array.isArray(qr.menu_items) && qr.menu_items.length ? qr.menu_items : d.menuItems || d.menu_items || qr.menu_items || []),
+      ownerName: d.ownerName || d.owner_name || "",
+      altPhone: d.altPhone || d.alt_phone || "",
+      vehicleNumber: d.vehicleNumber || d.vehicle_number || "",
+      bloodGroup: d.bloodGroup || d.blood_group || "",
+      emergencyName: d.emergencyName || d.emergency_name || "",
+      emergencyPhone: d.emergencyPhone || d.emergency_phone || "",
+      doctorPhone: d.doctorPhone || d.doctor_phone || "",
+      serviceType: d.serviceType || d.service_type || "",
+      businessName: d.businessName || d.business_name || "",
+      productName: d.productName || d.product_name || "",
+      upiId: d.upiId || d.upi_id || "",
+      petName: d.petName || d.pet_name || "",
+      orderUrl: d.orderUrl || d.order_url || "",
+      bookingUrl: d.bookingUrl || d.booking_url || "",
+      manualUrl: d.manualUrl || d.manual_url || "",
+      purchaseDate: d.purchaseDate || d.purchase_date || "",
+      supportPhone: d.supportPhone || d.support_phone || "",
+      petPhotoUrl: d.petPhotoUrl || d.pet_photo_url || "",
+      vetPhone: d.vetPhone || d.vet_phone || "",
+      sellerPhone: d.sellerPhone || d.seller_phone || "",
+      productImageUrl: d.productImageUrl || d.product_image_url || "",
+      photoUrl: d.photoUrl || d.photo_url || "",
+      googleMapsUrl: d.googleMapsUrl || d.google_maps_url || "",
+      linkUrl: d.linkUrl || d.link_url || "",
+      emergencyContact: d.emergencyContact || d.emergency_contact || "",
+    },
+  };
+
+  let wantsJson = event.queryStringParameters?.format === "json";
+  if (!wantsJson && event.rawUrl) {
+    try { wantsJson = new URL(event.rawUrl).searchParams.get("format") === "json"; } catch { /* ignore */ }
+  }
+  if (wantsJson) {
+    return {
+      statusCode: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Cache-Control": "public, max-age=60",
+      },
+      body: JSON.stringify(payload),
+    };
+  }
+
+  return {
+    statusCode: 200,
+    headers: {
+      "Content-Type": "text/html; charset=utf-8",
+      "Cache-Control": "public, max-age=60",
+    },
+    body: buildViewerHTML(payload),
+  };
+};
+
+// ─── Responsive public QR viewer (server-rendered) ─────────────────────────
+type QRData = Record<string, unknown>;
+type QRPayload = { type: string; title: string; data: QRData };
+type Entry = [string, unknown];
+
+const THEMES: Record<string, [string, string, string, string]> = {
+  personal: ['Personal profile', '#4338ca', '#eef2ff', 'user'],
+  business: ['Business card', '#0f766e', '#e6f6f3', 'briefcase'],
+  hotel_menu: ['Hotel menu', '#a84313', '#fff2e5', 'menu'],
+  restaurant: ['Restaurant', '#a84313', '#fff2e5', 'menu'],
+  pet_id: ['Pet ID', '#a84313', '#fff2e5', 'heart'],
+  vehicle: ['Vehicle ID', '#036b86', '#e3f5fb', 'car'],
+  medical: ['Medical ID', '#b42335', '#fff0f2', 'heart'],
+  social: ['Social profile', '#6d28d9', '#f3eefe', 'link'],
+  product: ['Product information', '#0f766e', '#e6f6f3', 'box'],
+  resume: ['Résumé', '#1d4ed8', '#edf4ff', 'file'],
+  appointment: ['Appointment', '#a84313', '#fff2e5', 'calendar'],
+  upi_payment: ['UPI payment', '#4338ca', '#eef2ff', 'wallet'],
+  wifi: ['Wi-Fi access', '#036b86', '#e3f5fb', 'wifi'],
+  local_shop: ['Local shop', '#167247', '#e9f8ef', 'bag'],
+  family_tree: ['Family tree', '#6d28d9', '#f3eefe', 'users'],
+  event: ['Event invitation', '#be185d', '#fff0f7', 'calendar'],
+  custom: ['Custom information', '#475569', '#edf2f7', 'file'],
+};
+const ICONS: Record<string,string> = {
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>',
+  users:'<circle cx="9" cy="8" r="3"/><path d="M2 21v-2a7 7 0 0 1 14 0v2M17 5a3 3 0 0 1 0 6m1 3a5 5 0 0 1 4 5v2"/>',
+  briefcase:'<rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V4h8v3M3 13h18M10 13v2h4v-2"/>',
+  phone:'<path d="M22 16.9v3a2 2 0 0 1-2.2 2 18 18 0 0 1-7.9-2.8 18 18 0 0 1-5.5-5.5 18 18 0 0 1-2.8-8A2 2 0 0 1 5.6 3h3a2 2 0 0 1 2 1.7l.5 3a2 2 0 0 1-.6 1.7L9.2 10.7a14 14 0 0 0 4.9 4.9l1.3-1.3a2 2 0 0 1 1.7-.6l3 .5a2 2 0 0 1 1.9 2.7z"/>',
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7 .5l3-3a5 5 0 0 0-7-7l-2 2m3 5a5 5 0 0 0-7-.5l-3 3a5 5 0 0 0 7 7l2-2"/>',
+  heart:'<path d="M20.8 8.5c0 5-8.8 11-8.8 11S3.2 13.5 3.2 8.5A4.8 4.8 0 0 1 12 5.9a4.8 4.8 0 0 1 8.8 2.6Z"/><path d="M3 12h5l2-3 3 6 2-3h6"/>',
+  car:'<path d="m5 11 2-6h10l2 6M3 11h18v8H3zM5 19v2m14-2v2M6 15h2m8 0h2"/>',
+  box:'<path d="m12 3 9 5v8l-9 5-9-5V8zM3 8l9 5 9-5M12 13v8M7.5 5.5l9 5"/>',
+  file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8m-8 4h8"/>',
+  calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4m8-4v4M3 11h18m-13 4h2m4 0h2"/>',
+  wifi:'<path d="M2 8a16 16 0 0 1 20 0M5 12a11 11 0 0 1 14 0m-11 4a6 6 0 0 1 8 0"/><circle cx="12" cy="20" r="1"/>',
+  wallet:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18M15 15h3"/>',
+  bag:'<path d="M5 7h14l2 14H3zM9 9V6a3 3 0 0 1 6 0v3"/>',
+  menu:'<path d="M4 3v7a3 3 0 0 0 6 0V3M7 3v18M20 3c-4 1-5 5-5 10h5m0-10v18"/>',
+  map:'<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="2.5"/>',
+  download:'<path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/>',
+  copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/>',
+  share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.5 6.6-4m-6.6 7 6.6 4"/>',
+  arrow:'<path d="M7 17 17 7M7 7h10v10"/>',
+  chat:'<path d="M21 11a9 9 0 0 1-9 9 10 10 0 0 1-4-.9L3 21l1.9-5A9 9 0 1 1 21 11z"/><path d="M8 11h8"/>',
+  image:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.5"/><path d="m3 17 5-5 4 4 4-5 5 6"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v.1"/>',
+};
+function icon(name: string) {
+  return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ICONS.info}</svg>`;
+}
+function esc(value: unknown): string {
+  return String(value ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function filled(v: unknown): boolean {
+  if (v == null) return false;
+  if (typeof v === 'string') return v.trim() !== '';
+  if (Array.isArray(v)) return v.some(filled);
+  if (typeof v === 'object') return Object.values(v as QRData).some(filled);
+  return true; // Includes zero and false.
+}
+function scalar(v: unknown): string {
+  return typeof v === 'string' || typeof v === 'number' ? String(v).trim() : '';
+}
+function norm(k: string) { return k.replace(/[^a-z0-9]/gi,'').toLowerCase(); }
+function label(k: string): string {
+  const special: Record<string,string> = { ssid:'Network name (SSID)', upiid:'UPI ID', sku:'SKU', googlemapsurl:'Google Maps', altphone:'Alternate phone', emergencyname:'Emergency contact name', emergencyphone:'Emergency phone', doctorphone:'Doctor phone', vetphone:'Veterinarian phone', model:'Make & model', vehicleNumber:'Vehicle number', body:'Message', note:'Notes', menuitems:'Menu items', photoUrl:'Profile photo', petphotourl:'Pet photo', productimageurl:'Product image', rsvp:'RSVP', url:'URL', bio:'Bio', whatsapp:'WhatsApp', linkedin:'LinkedIn', youtube:'YouTube', twitter:'X / Twitter', wifi:'Wi-Fi', encryption:'Security type', manualurl:'Product manual', orderurl:'Order link', bookingurl:'Booking link', linkurl:'Link', ownername:'Owner name', purchaseDate:'Purchase date' };
+  return special[k] || special[norm(k)] || k.replace(/([a-z0-9])([A-Z])/g,'$1 $2').replace(/[_-]+/g,' ').replace(/\b\w/g,c=>c.toUpperCase()).replace(/\bUrl\b/g,'URL').replace(/\bId\b/g,'ID');
+}
+function get(p: QRData, ...keys: string[]): unknown {
+  for (const key of keys) {
+    if (filled(p[key])) return p[key];
+    const alias = Object.keys(p).find(k => norm(k) === norm(key) && filled(p[k]));
+    if (alias) return p[alias];
+  }
+  return '';
+}
+function webUrl(v: unknown): string {
+  const s = scalar(v); if (!s || /[\s\u0000-\u001f]/.test(s)) return '';
+  try {
+    const raw = s.startsWith('//') ? 'https:' + s : /^[a-z][a-z0-9+.-]*:/i.test(s) ? s : 'https://' + s;
+    const u = new URL(raw);
+    return /^https?:$/.test(u.protocol) && u.hostname && !u.username && !u.password ? u.href : '';
+  } catch { return ''; }
+}
+function tel(v: unknown) { const s=scalar(v); return /^[+\d().\s-]+$/.test(s) && /\d/.test(s) ? 'tel:'+s.replace(/[^+\d]/g,'') : ''; }
+function mail(v: unknown) { const s=scalar(v); return /^[^\s@?&#]+@[^\s@?&#]+\.[^\s@?&#]+$/.test(s) ? 'mailto:'+encodeURIComponent(s).replace(/%40/g,'@') : ''; }
+function whatsapp(v: unknown) { const s=scalar(v); if (/^https?:\/\//i.test(s)) { const u=webUrl(s); if (!u) return ''; const h=new URL(u).hostname; return ['wa.me','api.whatsapp.com','www.whatsapp.com','whatsapp.com'].includes(h) ? u : ''; } const digits=s.replace(/\D/g,''); return /^[+\d().\s-]+$/.test(s) && digits.length>=7 && digits.length<=15 ? 'https://wa.me/'+digits : ''; }
 const SOCIAL: Record<string,string> = {instagram:'https://www.instagram.com/',youtube:'https://www.youtube.com/@',twitter:'https://x.com/',x:'https://x.com/',facebook:'https://www.facebook.com/',linkedin:'https://www.linkedin.com/in/',tiktok:'https://www.tiktok.com/@',telegram:'https://t.me/',github:'https://github.com/',snapchat:'https://www.snapchat.com/add/'};
 function socialUrl(k:string,v:unknown) { const s=scalar(v); if (!s) return ''; if (/^https?:\/\//i.test(s) || /^[\w.-]+\.[a-z]{2,}\//i.test(s)) return webUrl(s); return SOCIAL[k]+encodeURIComponent(s.replace(/^@/,'')); }
 function imageKey(k:string) { return /^(photo|image|avatar|logo|picture|petphoto|productimage|profilephoto|coverimage|profileimage|menuphoto|itemimage|thumbnail)(url)?$/.test(norm(k)); }
@@ -129,7 +428,7 @@ function buildViewerHTML(payload: QRPayload) {
   const featureText=type==='upi_payment'?'₹ '+scalar(feature):scalar(feature);
   return `${head(name,accent)}<body style="--accent:${accent};--tint:${tint}"><div class="shell"><header class="topbar">${brand()}<button type="button" class="share" id="share">${icon('share')}<span>Share</span></button></header><main class="layout"><aside class="profile"><div class="hero"><div class="hero-top"><span class="type">${icon(ic)} ${esc(typeName)}</span><span class="hero-mark" aria-hidden="true">${icon(ic)}</span></div><div class="portrait"><span>${['personal','business','resume','social'].includes(type)?esc(initial):icon(ic)}</span>${photo?`<img src="${esc(photo)}" alt="${esc(name)}" referrerpolicy="no-referrer"/>`:''}</div><h1>${esc(name)}</h1>${subtitle&&subtitle!==name?`<p class="subtitle">${esc(subtitle)}</p>`:''}${payload.title&&payload.title!==name&&payload.title!==typeName?`<p class="card-title">${esc(payload.title)}</p>`:''}${hasFeature?`<div class="feature"><span>${esc(featureLabel)}</span><strong>${esc(featureText)}</strong></div>`:''}</div>${actions(p,type,name)}${type==='upi_payment'?'<div class="hint">Confirm the payee and amount in your UPI app before paying. You can also copy the UPI ID.</div>':''}</aside><div class="content"><div class="content-title"><span class="eyebrow">QR CARD DETAILS</span><h2>Information</h2><p>Contact details and information shared by the card owner.</p></div>${details(p,type)}</div></main><footer class="footer"><span>Powered by <strong>TapCard</strong></span><span>Digital information, made simple.</span></footer></div><div id="status" class="toast" role="status" aria-live="polite"></div><script>${VIEWER_SCRIPT}</script></body></html>`;
 }
-function html404(title:string,message:string) {return {statusCode:404,headers:{'Content-Type':'text/html; charset=utf-8'},body:`${head(title,'#4338ca')}<body><div class="shell"><header class="topbar">${brand()}</header><main class="not-found"><span class="panel-icon">${icon('info')}</span><h1>${esc(title)}</h1><p>${esc(message)}</p></main><footer class="footer">Powered by TapCard</footer></div></body></html>`};}
+function html404(title:string,message:string,status=404) {return {statusCode:status,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'},body:`${head(title,'#4338ca')}<body><div class="shell"><header class="topbar">${brand()}</header><main class="not-found"><span class="panel-icon">${icon('info')}</span><h1>${esc(title)}</h1><p>${esc(message)}</p></main><footer class="footer">Powered by TapCard</footer></div></body></html>`};}
 
 const VIEWER_CSS = `
 *{box-sizing:border-box}html{min-width:0}body{margin:0;min-height:100vh;background:#f5f6fa;color:#182235;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:15px;line-height:1.55;--accent:#4338ca;--tint:#eef2ff;-webkit-font-smoothing:antialiased}a{color:var(--accent);text-decoration:none}button{font:inherit;cursor:pointer}button,a{-webkit-tap-highlight-color:transparent}a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:4px}svg{flex-shrink:0}h1,h2,h3,p,dl,dd{margin:0}img{max-width:100%;display:block}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;margin:0}.shell{max-width:1180px;margin:auto;padding:0 32px}.topbar{min-height:88px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid #e1e5ee}.brand{display:flex;align-items:center;gap:11px;font-weight:850;font-size:19px;letter-spacing:-.6px;line-height:1.15}.brand-mark{position:relative;width:42px;height:42px;background:#fff;border:1px solid #e4e6ef;border-radius:13px;display:grid;place-items:center;color:#4338ca;overflow:hidden}.brand-mark svg{position:absolute;width:32px;height:32px;z-index:0}.brand-mark img{position:relative;z-index:1;background:#fff;object-fit:contain}.brand-sub{display:block;font-size:10px;letter-spacing:.35px;font-weight:600;color:#697386;margin-top:4px}.share{display:flex;align-items:center;gap:8px;border:1px solid #dce1e9;background:white;color:#29354a;border-radius:12px;padding:10px 16px;font-weight:700;font-size:13px;min-height:44px}.share svg{width:17px;height:17px}.layout{display:grid;grid-template-columns:minmax(0,350px) minmax(0,1fr);gap:28px;align-items:start;padding:35px 0 32px}.profile{background:#fff;border:1px solid #e2e6ee;border-radius:24px;overflow:hidden;box-shadow:0 10px 30px #17243b08;min-width:0}.hero{position:relative;padding:24px 25px 28px;background:linear-gradient(150deg,var(--tint),#fff 90%);overflow:hidden;border-bottom:1px solid #edf0f6}.hero::after{content:"";position:absolute;top:-96px;right:-83px;width:240px;height:240px;border:1px solid var(--accent);opacity:.10;border-radius:50%;box-shadow:0 0 0 26px var(--tint),0 0 0 27px var(--accent),0 0 0 51px var(--tint),0 0 0 52px var(--accent);pointer-events:none}.hero-top,.portrait,.hero h1,.subtitle,.card-title,.feature{position:relative;z-index:1}.hero-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:27px;gap:8px}.type{display:inline-flex;align-items:center;gap:6px;border-radius:9px;padding:7px 10px;background:#fff;color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.2px;border:1px solid #ffffff;max-width:100%;overflow-wrap:anywhere}.type svg{width:15px;height:15px}.hero-mark{color:var(--accent);opacity:.55}.hero-mark svg{width:25px;height:25px}.portrait{width:104px;height:104px;background:var(--accent);color:white;border:5px solid #fff;border-radius:29px;display:grid;place-items:center;overflow:hidden;box-shadow:0 8px 20px #17243b16;margin-bottom:20px}.portrait span{font-size:31px;font-weight:800}.portrait span svg{width:46px;height:46px}.portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:white}.hero h1{font-size:clamp(25px,3.2vw,34px);line-height:1.15;letter-spacing:-1.05px;font-weight:820;overflow-wrap:anywhere}.subtitle{color:#526079;font-size:14px;margin-top:9px;white-space:pre-wrap;overflow-wrap:anywhere}.card-title{color:#697386;font-size:12px;margin-top:8px;overflow-wrap:anywhere}.feature{display:flex;flex-direction:column;align-items:flex-start;gap:2px;background:#fff;border:1px solid #e3e7ef;padding:15px 17px;border-radius:13px;margin-top:20px}.feature span{font-size:11px;font-weight:750;text-transform:uppercase;letter-spacing:.55px;color:#606b7e}.feature strong{color:var(--accent);font-size:26px;font-weight:850;line-height:1.2;overflow-wrap:anywhere;max-width:100%}.quick{padding:23px 24px}.quick h2{font-size:12px;font-weight:750;letter-spacing:.2px;color:#657086;margin-bottom:13px}.actions{display:grid;grid-template-columns:minmax(0,1fr);gap:9px}.action{display:flex;align-items:center;gap:10px;min-height:49px;background:#fff;border:1px solid #e0e5ee;border-radius:12px;color:#26334a;padding:12px 13px;font-size:13px;font-weight:700;line-height:1.35;transition:background .16s,border-color .16s,transform .16s;min-width:0}.action svg{width:18px;height:18px;color:var(--accent)}.action span{flex:1;min-width:0;overflow-wrap:anywhere}.action svg:last-child{width:15px;height:15px;opacity:.65}.action.primary,.action.emergency{background:var(--accent);color:#fff;border-color:var(--accent)}.action.primary svg,.action.emergency svg{color:#fff}.hint{margin:0 24px 24px;padding:13px;background:var(--tint);color:var(--accent);border-radius:12px;font-size:12px;font-weight:650}.content{display:grid;gap:16px;min-width:0}.content-title{padding:0 2px 4px}.eyebrow{font-size:10px;font-weight:800;letter-spacing:1.25px;color:var(--accent)}.content-title h2{font-size:29px;font-weight:820;letter-spacing:-.8px;line-height:1.25;margin:3px 0 5px}.content-title p{font-size:13px;color:#667287}.panel{background:white;border:1px solid #e1e6ee;border-radius:19px;overflow:hidden;min-width:0;box-shadow:0 4px 14px #17243b05}.panel-head{display:flex;align-items:center;gap:11px;padding:19px 21px;border-bottom:1px solid #edf0f5}.panel-icon{display:grid;place-items:center;background:var(--tint);color:var(--accent);width:35px;height:35px;border-radius:10px;flex-shrink:0}.panel-icon svg{width:19px;height:19px}.panel-head h2{font-size:16px;font-weight:750;letter-spacing:-.25px;overflow-wrap:anywhere}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:4px 21px 9px;column-gap:22px}.field{padding:16px 0;border-bottom:1px solid #eef1f6;min-width:0}.field.wide{grid-column:1/-1}.field:last-child{border-bottom:0}.field dt,.nested dt{color:#617087;font-weight:700;font-size:11px;letter-spacing:.12px;margin-bottom:5px;overflow-wrap:anywhere}.field dd{font-size:14px;font-weight:600;white-space:pre-wrap;overflow-wrap:anywhere;min-width:0;line-height:1.6}.field dd a,.nested dd a{color:var(--accent);text-decoration:underline;text-decoration-color:#b8c3d8;text-underline-offset:3px;overflow-wrap:anywhere}.field dd a svg,.nested dd a svg{display:inline-block;width:13px;height:13px;vertical-align:middle;opacity:.8}.urgent{border-color:#f1c0c8}.urgent .panel-head{background:#fff9fa}.nested{display:grid;gap:9px;min-width:0;white-space:normal}.nested>div{min-width:0}.nested dd{font-size:13px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}.array{display:grid;gap:8px;white-space:normal}.array-item{background:#f7f8fb;border:1px solid #edf0f5;padding:11px;border-radius:9px;min-width:0;overflow-wrap:anywhere}.array-index{display:block;color:var(--accent);font-weight:800;font-size:11px;margin-bottom:5px}.copy{display:inline-flex;align-items:center;gap:4px;background:var(--tint);color:var(--accent);border:0;border-radius:7px;padding:7px 9px;margin:6px 0 0 8px;font-size:11px;font-weight:750;min-height:33px;vertical-align:middle}.copy svg{width:13px;height:13px}.inline-image{display:flex;flex-direction:column;gap:7px;width:fit-content;max-width:100%;text-decoration:none!important}.inline-image img{max-width:100%;max-height:260px;object-fit:contain;border-radius:12px;background:#f3f5f9;border:1px solid #e6eaf1}.inline-image span{font-size:12px}.menu-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:18px}.menu-card{border:1px solid #e4e8ef;border-radius:15px;overflow:hidden;min-width:0;background:white}.menu-photo{aspect-ratio:16/10;display:grid;place-items:center;background:var(--tint);color:var(--accent);overflow:hidden}.menu-photo>svg{width:36px;height:36px;opacity:.6}.menu-photo a{display:block;width:100%;height:100%;min-height:0}.menu-photo img{width:100%;height:100%;object-fit:cover}.menu-body{padding:15px;display:grid;gap:9px;min-width:0;overflow-wrap:anywhere}.menu-body h3{font-size:16px;font-weight:750;line-height:1.4}.price{font-size:17px;line-height:1.4;font-weight:850;color:var(--accent)}.menu-other{padding:20px}.empty{padding:26px;color:#64748b}.empty h2{font-size:17px;color:#26334a;margin:8px 0}.footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #e1e5ee;padding:21px 0 max(24px,env(safe-area-inset-bottom));font-size:12px;color:#6b778b;gap:10px}.footer strong{color:#343f59}.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,16px);background:#182235;color:#fff;padding:12px 18px;border-radius:11px;font-size:13px;box-shadow:0 4px 20px #17243b30;opacity:0;pointer-events:none;transition:.2s;z-index:5;max-width:calc(100% - 24px);text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}.not-found{text-align:center;background:white;border:1px solid #e1e6ee;padding:50px 20px;margin:40px auto;border-radius:22px;max-width:480px}.not-found .panel-icon{margin:0 auto 18px;width:50px;height:50px}.not-found h1{font-size:27px;margin-bottom:8px}.not-found p{color:#667287}.broken-image{display:none!important}
