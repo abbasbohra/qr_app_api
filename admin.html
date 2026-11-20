@@ -2167,15 +2167,381 @@
           scroll-behavior: auto !important;
         }
       }
+
+      /* ── TAPCARD / ANIMATED LOADING EXPERIENCE ── */
+      .splash {
+        min-height: 100vh;
+        min-height: 100dvh;
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        padding: 24px;
+        background:
+          radial-gradient(ellipse at 15% 12%, #e4e0ff 0%, transparent 45%),
+          radial-gradient(ellipse at 90% 90%, #dce9ff 0%, transparent 45%),
+          #f7f8fc;
+      }
+      .splash::before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        inset: 0;
+        background-image: radial-gradient(#a9a8d455 1px, transparent 1px);
+        background-size: 24px 24px;
+        mask-image: radial-gradient(ellipse, #000 5%, transparent 72%);
+      }
+      .splashInner {
+        width: min(100%, 410px);
+        padding: 42px 28px 30px;
+        gap: 0;
+        border: 1px solid #fff;
+        border-radius: 28px;
+        background: #ffffffed;
+        box-shadow:
+          0 24px 80px #2e28661a,
+          0 3px 12px #2e286609;
+        text-align: center;
+      }
+      .tcLoadOrbit {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 126px;
+        height: 126px;
+        margin: 0 auto 22px;
+      }
+      .tcLoadOrbit::before,
+      .tcLoadOrbit::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        inset: 0;
+        border: 2px solid #e9e7ff;
+      }
+      .tcLoadOrbit::after {
+        border-color: transparent;
+        border-top-color: #5147e5;
+        border-right-color: #a398ff;
+        animation: tcLoaderSpin 1.4s linear infinite;
+      }
+      .splashLogo {
+        width: 73px;
+        height: 73px;
+        object-fit: contain;
+        border-radius: 19px;
+        padding: 6px;
+        background: #fff;
+        box-shadow: 0 6px 24px #5147e52b;
+        animation: tcLoaderFloat 2.6s ease-in-out infinite;
+      }
+      .tcSplashBrand {
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--primary);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 9px;
+      }
+      .tcSplashTitle {
+        font-size: 26px;
+        font-weight: 800;
+        letter-spacing: -1px;
+        line-height: 1.2;
+        color: var(--text);
+        margin-bottom: 9px;
+      }
+      .splashText {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+      .tcLoadTrack {
+        height: 5px;
+        background: #eeedfa;
+        width: 100%;
+        border-radius: 99px;
+        overflow: hidden;
+        margin: 28px 0 15px;
+        position: relative;
+      }
+      .tcLoadTrack::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 43%;
+        height: 100%;
+        border-radius: 99px;
+        background: linear-gradient(90deg, #5147e5, #a29aff);
+        animation: tcLoaderTrack 1.55s ease-in-out infinite;
+      }
+      .tcLoadFoot {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .tcLoadDot {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--primary);
+        animation: tcLoaderPulse 1.4s ease-in-out infinite;
+        flex: none;
+      }
+      @keyframes tcLoaderSpin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes tcLoaderFloat {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-5px);
+        }
+      }
+      @keyframes tcLoaderTrack {
+        0% {
+          transform: translateX(-105%);
+        }
+        100% {
+          transform: translateX(340%);
+        }
+      }
+      @keyframes tcLoaderPulse {
+        0%,
+        100% {
+          opacity: 0.45;
+          box-shadow: 0 0 0 0 #5147e52b;
+        }
+        50% {
+          opacity: 1;
+          box-shadow: 0 0 0 5px #5147e512;
+        }
+      }
+      @keyframes tcLoaderShimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+      .tcSkeleton {
+        display: block;
+        min-width: 0;
+        background: #e9edf5;
+        background-image: linear-gradient(
+          100deg,
+          #e9edf5 20%,
+          #f9faff 45%,
+          #e9edf5 70%
+        );
+        background-size: 220% 100%;
+        animation: tcLoaderShimmer 1.8s linear infinite;
+        border-radius: 7px;
+      }
+      .loading.tcLoading {
+        text-align: left;
+        padding: 0;
+      }
+      .tcLoadingHead {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px 21px;
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 600;
+        border-bottom: 1px solid var(--border);
+      }
+      .tcSkeletonRows {
+        padding: 0 21px;
+      }
+      .tcSkeletonRow {
+        display: grid;
+        grid-template-columns:
+          minmax(0, 1.6fr) minmax(0, 1.2fr) minmax(0, 0.8fr)
+          minmax(0, 0.7fr);
+        align-items: center;
+        gap: 22px;
+        min-height: 66px;
+        border-bottom: 1px solid #eef0f5;
+      }
+      .tcSkeletonRow:last-child {
+        border-bottom: none;
+      }
+      .tcSkeletonIdentity {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        min-width: 0;
+      }
+      .tcSkeletonAvatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        flex: none;
+      }
+      .tcSkeletonText {
+        display: grid;
+        gap: 7px;
+        flex: 1;
+        min-width: 0;
+      }
+      .tcSkeletonLine {
+        height: 11px;
+        width: 100%;
+      }
+      .tcSkeletonLine.short {
+        height: 8px;
+        width: 62%;
+      }
+      .tcSkeletonPill {
+        height: 22px;
+        width: min(100%, 68px);
+        border-radius: 7px;
+        justify-self: end;
+      }
+      .stat .value.tcStatLoading {
+        position: relative;
+        min-height: 30px;
+        width: 72px;
+        color: transparent;
+        user-select: none;
+        overflow: hidden;
+      }
+      .stat .value.tcStatLoading::after {
+        content: "";
+        position: absolute;
+        inset: 1px 0 3px;
+        border-radius: 7px;
+        background: linear-gradient(
+          100deg,
+          #e9edf5 20%,
+          #fafbff 45%,
+          #e9edf5 70%
+        );
+        background-size: 220% 100%;
+        animation: tcLoaderShimmer 1.8s linear infinite;
+      }
+      .tcChartSkeleton {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 9px;
+        height: 166px;
+        padding: 18px 21px;
+      }
+      .tcChartSkeleton .tcSkeleton {
+        flex: 1;
+        max-width: 45px;
+        border-radius: 6px 6px 2px 2px;
+      }
+      .tcTicketSkeleton {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        margin-bottom: 14px;
+        overflow: hidden;
+      }
+      .tcTicketSkeleton .tcSkeletonRow {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 0.45fr);
+        padding: 0 20px;
+      }
+      .tcTicketBody {
+        display: grid;
+        gap: 12px;
+        padding: 5px 20px 23px;
+      }
+      .tcLoadFailure {
+        text-align: center;
+        padding: 36px 18px;
+        color: var(--muted);
+      }
+      .tcLoadFailure strong {
+        display: block;
+        color: var(--text);
+        font-size: 14px;
+        margin-bottom: 5px;
+      }
+      .tcLoadFailure .btn {
+        margin-top: 14px;
+      }
+      @media (max-width: 600px) {
+        .splashInner {
+          padding: 34px 22px 25px;
+        }
+        .tcSplashTitle {
+          font-size: 23px;
+        }
+        .tcSkeletonRows {
+          padding: 0 14px;
+        }
+        .tcLoadingHead {
+          padding: 14px;
+        }
+        .tcSkeletonRow {
+          grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.7fr);
+          gap: 14px;
+          min-height: 62px;
+        }
+        .tcSkeletonRow > .tcSkeleton:nth-child(2),
+        .tcSkeletonRow > .tcSkeleton:nth-child(3) {
+          display: none;
+        }
+        .tcChartSkeleton {
+          padding: 16px 14px;
+          gap: 5px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .tcLoadOrbit::after,
+        .splashLogo,
+        .tcLoadDot,
+        .tcLoadTrack::after,
+        .tcSkeleton,
+        .stat .value.tcStatLoading::after {
+          animation: none !important;
+        }
+        .tcLoadTrack::after {
+          left: 28%;
+        }
+        .tcLoadOrbit::after {
+          border-right-color: #5147e5;
+        }
+      }
     </style>
   </head>
   <body>
     <!-- ═══════════════════ SPLASH ═══════════════════ -->
     <div class="splash" id="splashView">
-      <div class="splashInner">
-        <img src="/logo.png" alt="TapCard" class="splashLogo" />
-        <div class="spinner"></div>
-        <div class="splashText">Loading admin panel…</div>
+      <div
+        class="splashInner"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
+        <div class="tcLoadOrbit" aria-hidden="true">
+          <img src="/logo.png" alt="" class="splashLogo" />
+        </div>
+        <div class="tcSplashBrand">TapCard · Admin</div>
+        <div class="tcSplashTitle" id="tcSplashTitle">Getting things ready</div>
+        <div class="splashText" id="tcSplashText">
+          Preparing your workspace. Please wait a moment.
+        </div>
+        <div class="tcLoadTrack" aria-hidden="true"></div>
+        <div class="tcLoadFoot">
+          <span class="tcLoadDot" aria-hidden="true"></span
+          ><span id="tcSplashStatus">Checking your session</span>
+        </div>
       </div>
     </div>
 
@@ -4669,6 +5035,11 @@
         btn.disabled = true;
         btn.textContent = "Signing in…";
 
+        document.getElementById("tcSplashTitle").textContent = "Signing you in";
+        document.getElementById("tcSplashText").textContent =
+          "Verifying your administrator credentials.";
+        document.getElementById("tcSplashStatus").textContent =
+          "Authenticating";
         document.getElementById("loginView").style.display = "none";
         document.getElementById("splashView").style.display = "flex";
 
@@ -4778,8 +5149,100 @@
         loadPush();
       }
 
+      // ─── Loading UI (no artificial delay) ──────────────────
+      const tcPendingLoads = new Set();
+      let tcSupportReload = false;
+      function tcSkeletonMarkup(kind, label) {
+        const head = `<div class="tcLoadingHead" role="status"><span class="tcLoadDot" aria-hidden="true"></span>${label}</div>`;
+        const line = '<span class="tcSkeleton tcSkeletonLine"></span>';
+        const short = '<span class="tcSkeleton tcSkeletonLine short"></span>';
+        const identity = `<div class="tcSkeletonIdentity"><span class="tcSkeleton tcSkeletonAvatar"></span><div class="tcSkeletonText">${line}${short}</div></div>`;
+        if (kind === "chart")
+          return (
+            head +
+            '<div class="tcChartSkeleton" aria-hidden="true">' +
+            [36, 65, 48, 90, 72, 52, 100, 75, 88, 50, 68, 94, 58, 78]
+              .map(
+                (h) => `<span class="tcSkeleton" style="height:${h}%"></span>`,
+              )
+              .join("") +
+            "</div>"
+          );
+        if (kind === "tickets")
+          return [0, 1, 2]
+            .map(
+              (_, i) =>
+                `<div class="tcTicketSkeleton">${i === 0 ? head : ""}<div aria-hidden="true"><div class="tcSkeletonRow">${identity}<span class="tcSkeleton tcSkeletonPill"></span></div><div class="tcTicketBody">${line}${short}</div></div></div>`,
+            )
+            .join("");
+        return (
+          head +
+          '<div class="tcSkeletonRows" aria-hidden="true">' +
+          Array.from(
+            { length: 5 },
+            () =>
+              `<div class="tcSkeletonRow">${identity}${line}${short}<span class="tcSkeleton tcSkeletonPill"></span></div>`,
+          ).join("") +
+          "</div>"
+        );
+      }
+      function tcBeginLoad(name, page, entries) {
+        if (tcPendingLoads.has(name)) return false;
+        tcPendingLoads.add(name);
+        const section = document.getElementById("page-" + page);
+        if (section)
+          section.querySelectorAll(".stat .value").forEach((el) => {
+            el.classList.add("tcStatLoading");
+            el.setAttribute("aria-busy", "true");
+          });
+        entries.forEach(([id, target, label, kind]) => {
+          const el = document.getElementById(id);
+          if (target) document.getElementById(target).style.display = "none";
+          if (!el) return;
+          el.classList.add("tcLoading");
+          el.style.display = "block";
+          el.setAttribute("aria-busy", "true");
+          el.innerHTML = tcSkeletonMarkup(kind, label);
+        });
+        return true;
+      }
+      function tcFinishLoad(name, page, entries, error) {
+        tcPendingLoads.delete(name);
+        const section = document.getElementById("page-" + page);
+        if (section)
+          section.querySelectorAll(".stat .value").forEach((el) => {
+            el.classList.remove("tcStatLoading");
+            el.removeAttribute("aria-busy");
+          });
+        entries.forEach(([id]) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.classList.remove("tcLoading");
+          el.removeAttribute("aria-busy");
+          if (
+            error &&
+            (el.querySelector(".tcLoadingHead") ||
+              el.textContent.startsWith("Error:"))
+          ) {
+            el.style.display = "block";
+            el.innerHTML =
+              '<div class="tcLoadFailure"><strong>Could not load data</strong><span>' +
+              escape(error.message || "Please try again.") +
+              '</span><br><button type="button" class="btn btn-ghost" onclick="' +
+              name +
+              '()">Try again</button></div>';
+          } else if (el.querySelector(".tcLoadingHead")) {
+            el.style.display = "none";
+            el.innerHTML = "";
+          }
+        });
+      }
+
       // ─── Stats ──────────────────────────────────────
       async function loadStats() {
+        const tcEntries = [];
+        if (!tcBeginLoad("loadStats", "dashboard", tcEntries)) return;
+        let tcError = null;
         try {
           const s = await apiCall("stats");
           document.getElementById("statUsers").textContent = s.totalUsers;
@@ -4787,20 +5250,35 @@
           document.getElementById("statCredits").textContent = s.totalCredits;
           document.getElementById("statActive").textContent = s.activeToday;
         } catch (e) {
+          tcError = e;
           toast(e.message, "error");
+        } finally {
+          tcFinishLoad("loadStats", "dashboard", tcEntries, tcError);
         }
       }
 
       // ─── Users ──────────────────────────────────────
       async function loadUsers() {
+        const tcEntries = [
+          ["usersLoading", "usersTable", "Loading users", "rows"],
+          ["recentUsersLoading", "recentUsers", "Loading recent users", "rows"],
+        ];
+        if (!tcBeginLoad("loadUsers", "users", tcEntries)) return;
+        let tcError = null;
         try {
           const { users } = await apiCall("listUsers");
           allUsers = users;
           renderUsers(users);
+          document.getElementById("recentUsers").style.display = "block";
           renderRecentUsers(users.slice(0, 5));
         } catch (e) {
+          tcError = e;
           document.getElementById("usersLoading").textContent =
             "Error: " + e.message;
+        } finally {
+          tcFinishLoad("loadUsers", "users", tcEntries, tcError);
+          if (tcError)
+            document.getElementById("recentUsers").style.display = "block";
         }
       }
 
@@ -4953,6 +5431,11 @@
 
       // ─── QRs ────────────────────────────────────────
       async function loadQRs() {
+        const tcEntries = [
+          ["qrsLoading", "qrsTable", "Loading QR codes", "rows"],
+        ];
+        if (!tcBeginLoad("loadQRs", "qrs", tcEntries)) return;
+        let tcError = null;
         try {
           const { qrCodes } = await apiCall("listQRs");
           document.getElementById("qrsLoading").style.display = "none";
@@ -4982,13 +5465,22 @@
             )
             .join("");
         } catch (e) {
+          tcError = e;
           document.getElementById("qrsLoading").textContent =
             "Error: " + e.message;
+        } finally {
+          tcFinishLoad("loadQRs", "qrs", tcEntries, tcError);
         }
       }
 
       // ─── Notifications ──────────────────────────────
       async function loadNotifications() {
+        const tcEntries = [
+          ["notifsLoading", "notifsTable", "Loading notifications", "rows"],
+        ];
+        if (!tcBeginLoad("loadNotifications", "notifications", tcEntries))
+          return;
+        let tcError = null;
         try {
           const { notifications } = await apiCall("listNotifications");
           document.getElementById("notifsLoading").style.display = "none";
@@ -5015,13 +5507,26 @@
             )
             .join("");
         } catch (e) {
+          tcError = e;
           document.getElementById("notifsLoading").textContent =
             "Error: " + e.message;
+        } finally {
+          tcFinishLoad(
+            "loadNotifications",
+            "notifications",
+            tcEntries,
+            tcError,
+          );
         }
       }
 
       // ─── Push ───────────────────────────────────────
       async function loadPush() {
+        const tcEntries = [
+          ["pushLoading", "pushTable", "Loading registered devices", "rows"],
+        ];
+        if (!tcBeginLoad("loadPush", "push", tcEntries)) return;
+        let tcError = null;
         try {
           const { users } = await apiCall("listUsers");
           pushUsers = users;
@@ -5031,8 +5536,11 @@
           document.getElementById("pushUserCount").textContent = users.length;
           renderPushUsers(users);
         } catch (e) {
+          tcError = e;
           document.getElementById("pushLoading").textContent =
             "Error: " + e.message;
+        } finally {
+          tcFinishLoad("loadPush", "push", tcEntries, tcError);
         }
       }
 
@@ -5414,9 +5922,16 @@
 
       // ─── Support ────────────────────────────────────
       async function loadSupportTickets() {
+        const tcEntries = [
+          ["supportList", null, "Loading support tickets", "tickets"],
+        ];
+        if (!tcBeginLoad("loadSupportTickets", "support", tcEntries)) {
+          tcSupportReload = true;
+          return;
+        }
+        let tcError = null;
         const status = document.getElementById("supportFilter").value;
         const list = document.getElementById("supportList");
-        list.innerHTML = '<div class="loading">Loading…</div>';
 
         try {
           const { tickets } = await apiCall("listSupportTickets", { status });
@@ -5452,7 +5967,14 @@
             )
             .join("");
         } catch (err) {
+          tcError = err;
           list.innerHTML = `<div class="empty" style="color:var(--danger);">Error: ${escape(err.message)}</div>`;
+        } finally {
+          tcFinishLoad("loadSupportTickets", "support", tcEntries, tcError);
+          if (tcSupportReload) {
+            tcSupportReload = false;
+            loadSupportTickets();
+          }
         }
       }
 
@@ -5489,6 +6011,11 @@
 
       // ─── Streaks ────────────────────────────────────
       async function loadStreaks() {
+        const tcEntries = [
+          ["streaksLoading", "streaksTable", "Loading streaks", "rows"],
+        ];
+        if (!tcBeginLoad("loadStreaks", "streaks", tcEntries)) return;
+        let tcError = null;
         try {
           const stats = await apiCall("activityStats");
           document.getElementById("statActiveToday").textContent =
@@ -5524,12 +6051,20 @@
             )
             .join("");
         } catch (e) {
+          tcError = e;
           toast(e.message, "error");
+        } finally {
+          tcFinishLoad("loadStreaks", "streaks", tcEntries, tcError);
         }
       }
 
       // ─── Spins ──────────────────────────────────────
       async function loadSpins() {
+        const tcEntries = [
+          ["spinsLoading", "spinsTable", "Loading spin history", "rows"],
+        ];
+        if (!tcBeginLoad("loadSpins", "spins", tcEntries)) return;
+        let tcError = null;
         try {
           const stats = await apiCall("spinStats");
           document.getElementById("spinStatToday").textContent =
@@ -5566,12 +6101,20 @@
             )
             .join("");
         } catch (e) {
+          tcError = e;
           toast(e.message, "error");
+        } finally {
+          tcFinishLoad("loadSpins", "spins", tcEntries, tcError);
         }
       }
 
       // ─── Notes ──────────────────────────────────────
       async function loadNotes() {
+        const tcEntries = [
+          ["notesLoading", "notesTable", "Loading notes", "rows"],
+        ];
+        if (!tcBeginLoad("loadNotes", "notes", tcEntries)) return;
+        let tcError = null;
         try {
           const stats = await apiCall("notesStats");
           document.getElementById("notesTotal").textContent = stats.totalNotes;
@@ -5603,12 +6146,20 @@
             )
             .join("");
         } catch (e) {
+          tcError = e;
           toast(e.message, "error");
+        } finally {
+          tcFinishLoad("loadNotes", "notes", tcEntries, tcError);
         }
       }
 
       // ─── Tasks ──────────────────────────────────────
       async function loadTasks() {
+        const tcEntries = [
+          ["tasksLoading", "tasksTable", "Loading tasks", "rows"],
+        ];
+        if (!tcBeginLoad("loadTasks", "tasks", tcEntries)) return;
+        let tcError = null;
         try {
           const stats = await apiCall("tasksStats");
           document.getElementById("tasksTotal").textContent = stats.totalTasks;
@@ -5643,12 +6194,20 @@
             )
             .join("");
         } catch (e) {
+          tcError = e;
           toast(e.message, "error");
+        } finally {
+          tcFinishLoad("loadTasks", "tasks", tcEntries, tcError);
         }
       }
 
       // ─── Reminders ──────────────────────────────────
       async function loadReminders() {
+        const tcEntries = [
+          ["remLoading", "remTable", "Loading reminders", "rows"],
+        ];
+        if (!tcBeginLoad("loadReminders", "reminders", tcEntries)) return;
+        let tcError = null;
         try {
           const stats = await apiCall("remindersStats");
           document.getElementById("remTotal").textContent =
@@ -5684,12 +6243,20 @@
             )
             .join("");
         } catch (e) {
+          tcError = e;
           toast(e.message, "error");
+        } finally {
+          tcFinishLoad("loadReminders", "reminders", tcEntries, tcError);
         }
       }
 
       // ─── Earnings ───────────────────────────────────
       async function loadEarnings() {
+        const tcEntries = [
+          ["earnLoading", "earnTable", "Loading earnings", "rows"],
+        ];
+        if (!tcBeginLoad("loadEarnings", "earnings", tcEntries)) return;
+        let tcError = null;
         try {
           const data = await apiCall("earningsOverview");
           document.getElementById("earnLifetime").textContent =
@@ -5725,12 +6292,20 @@
             )
             .join("");
         } catch (e) {
+          tcError = e;
           toast(e.message, "error");
+        } finally {
+          tcFinishLoad("loadEarnings", "earnings", tcEntries, tcError);
         }
       }
 
       // ─── Achievements ───────────────────────────────
       async function loadAchievements() {
+        const tcEntries = [
+          ["achLoading", "achTable", "Loading achievements", "rows"],
+        ];
+        if (!tcBeginLoad("loadAchievements", "achievements", tcEntries)) return;
+        let tcError = null;
         try {
           const stats = await apiCall("achievementsStats");
           document.getElementById("achTotal").textContent = stats.totalUnlocks;
@@ -5765,12 +6340,24 @@
             )
             .join("");
         } catch (e) {
+          tcError = e;
           toast(e.message, "error");
+        } finally {
+          tcFinishLoad("loadAchievements", "achievements", tcEntries, tcError);
         }
       }
 
       // ─── Activity ───────────────────────────────────
       async function loadActivity() {
+        const tcEntries = [
+          ["actFeatures", null, "Loading feature usage", "rows"],
+          ["actChart", null, "Loading activity chart", "chart"],
+        ];
+        if (!tcBeginLoad("loadActivity", "activity", tcEntries)) return;
+        let tcError = null;
+        document
+          .querySelectorAll(".tcActivityResult")
+          .forEach((el) => el.remove());
         try {
           const stats = await apiCall("activityStats");
           document.getElementById("actDau").textContent = stats.activeToday;
@@ -5791,7 +6378,7 @@
           featuresEl.insertAdjacentHTML(
             "afterend",
             `
-            <div class="tableWrap">
+            <div class="tableWrap tcActivityResult">
               <table>
                 <thead><tr><th>Feature</th><th>Events (30d)</th><th>Unique Users</th></tr></thead>
                 <tbody>
@@ -5821,7 +6408,7 @@
           chartEl.parentElement.insertAdjacentHTML(
             "beforeend",
             `
-            <div class="activityChart">
+            <div class="activityChart tcActivityResult">
               <div class="chartRow">
                 ${events.dailyCounts
                   .map((d) => {
@@ -5841,7 +6428,10 @@
           `,
           );
         } catch (e) {
+          tcError = e;
           toast(e.message, "error");
+        } finally {
+          tcFinishLoad("loadActivity", "activity", tcEntries, tcError);
         }
       }
 
