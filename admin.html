@@ -1190,6 +1190,983 @@
           font-size: 22px;
         }
       }
+      /* ── TAPCARD / MODERN WORKSPACE ── */
+      :root {
+        --bg: #f4f6fa;
+        --surface: #fff;
+        --surface-2: #f8f9fc;
+        --surface-3: #edf0f6;
+        --text: #182235;
+        --text-2: #344258;
+        --muted: #66758c;
+        --muted-2: #8793a7;
+        --border: #e5e9f1;
+        --primary: #5147e5;
+        --primary-hover: #4137cf;
+        --primary-soft: #eeedff;
+        --success: #11875f;
+        --success-soft: #e7f7ef;
+        --warning: #b76e0b;
+        --warning-soft: #fff4df;
+        --danger: #dc3c50;
+        --danger-soft: #fff0f1;
+        --purple: #8050d7;
+        --purple-soft: #f2edff;
+        --sidebar-w: 254px;
+        --radius: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 20px;
+        --shadow-sm: 0 2px 5px #18223505;
+        --shadow: 0 6px 20px #18223509;
+        --shadow-lg: 0 18px 50px #18223516;
+      }
+      body {
+        background: var(--bg);
+        font-size: 13px;
+      }
+      .uiIcon {
+        width: 19px;
+        height: 19px;
+        flex-shrink: 0;
+        vertical-align: middle;
+      }
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible,
+      textarea:focus-visible {
+        outline: 3px solid #a5a0ff;
+        outline-offset: 3px;
+      }
+      .sidebar {
+        background: #fff;
+        color: var(--text);
+        border-right: 1px solid var(--border);
+        overflow: hidden;
+      }
+      .sidebarHeader {
+        padding: 25px 21px 24px;
+        border-bottom: 1px solid var(--border);
+      }
+      .sidebarLogoIcon {
+        width: 39px;
+        height: 39px;
+        border: 1px solid var(--border);
+        box-shadow: none;
+        padding: 3px;
+      }
+      .sidebarLogoText {
+        color: var(--text);
+        font-size: 17px;
+        font-weight: 800;
+      }
+      .sidebarLogoSub {
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .nav {
+        overflow-y: auto;
+        min-height: 0;
+        padding: 9px 13px 14px;
+        gap: 3px;
+        scrollbar-width: thin;
+        scrollbar-color: #dfe3ef transparent;
+      }
+      .navGroupLabel {
+        font-size: 10px;
+        letter-spacing: 1.2px;
+        color: #8b96a8;
+        padding: 17px 11px 6px;
+      }
+      .navItem {
+        color: #536178;
+        font-size: 13px;
+        font-weight: 550;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 9px;
+        min-height: 39px;
+      }
+      .navItem:hover {
+        color: var(--primary);
+        background: #f4f3ff;
+      }
+      .navItem.active {
+        color: var(--primary);
+        background: var(--primary-soft);
+        font-weight: 700;
+        box-shadow: inset 3px 0 var(--primary);
+      }
+      .navIcon {
+        font-size: 16px;
+        width: 21px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .sidebarBottom {
+        padding: 13px;
+        border-top: 1px solid var(--border);
+        background: #fff;
+      }
+      .adminInfo {
+        background: #f7f8fc;
+        border: 1px solid var(--border);
+        margin-bottom: 6px;
+        padding: 10px;
+      }
+      .adminAvatar,
+      .avatar {
+        background: linear-gradient(135deg, #eeedff, #dce5ff);
+        color: #5147ce;
+        box-shadow: none;
+      }
+      .adminName {
+        color: var(--text);
+        font-size: 13px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .adminRole {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .main {
+        max-width: none;
+        padding: 0 32px 48px;
+      }
+      .workspaceBar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        min-height: 68px;
+        margin: 0 -32px 30px;
+        padding: 0 32px;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+      }
+      .breadcrumb,
+      .workspaceRight {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+      }
+      .breadcrumb {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .breadcrumb strong {
+        color: var(--text);
+        font-weight: 650;
+      }
+      .crumbSlash {
+        color: #c0c7d2;
+      }
+      .workspaceDate {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .adminPill {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #f4f3ff;
+        color: #5147ce;
+        font-size: 11px;
+        font-weight: 650;
+        border: 1px solid #e8e5ff;
+        border-radius: 7px;
+        padding: 6px 9px;
+      }
+      .adminPill .uiIcon {
+        width: 15px;
+        height: 15px;
+      }
+      .main > section {
+        max-width: 1600px;
+        margin: 0 auto;
+      }
+      .pageHeader {
+        margin-bottom: 24px;
+        align-items: center;
+      }
+      .pageHeader h1 {
+        font-size: 30px;
+        letter-spacing: -1.1px;
+        font-weight: 800;
+      }
+      .pageHeader .sub {
+        font-size: 13px;
+        color: var(--muted);
+        font-weight: 450;
+        margin-top: 5px;
+      }
+      .btn {
+        font-size: 13px;
+        min-height: 38px;
+        padding: 9px 15px;
+        border-radius: 9px;
+        gap: 7px;
+        font-weight: 650;
+      }
+      .btn .uiIcon {
+        width: 16px;
+        height: 16px;
+      }
+      .btn-primary {
+        background: var(--primary);
+        box-shadow: 0 3px 8px #5147e525;
+      }
+      .btn-primary:hover:not(:disabled) {
+        box-shadow: 0 5px 12px #5147e52b;
+      }
+      .btn-ghost {
+        box-shadow: none;
+        background: #fff;
+      }
+      .btn-sm {
+        min-height: 30px;
+        padding: 5px 10px;
+        font-size: 11px;
+        border-radius: 7px;
+      }
+      .btn:disabled {
+        opacity: 0.45;
+      }
+      .welcomeBanner {
+        position: relative;
+        isolation: isolate;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 202px;
+        padding: 27px 32px;
+        margin-bottom: 29px;
+        border-radius: 18px;
+        overflow: hidden;
+        background: linear-gradient(
+          110deg,
+          #292466 0%,
+          #5147d7 58%,
+          #7965ed 100%
+        );
+        color: white;
+        box-shadow: 0 10px 26px #5147e51a;
+      }
+      .welcomeCopy {
+        z-index: 2;
+        max-width: 590px;
+      }
+      .bannerEyebrow {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 10px;
+        letter-spacing: 1.5px;
+        font-weight: 700;
+        color: #d9d5ff;
+      }
+      .bannerDot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #b7f4d8;
+        display: inline-block;
+      }
+      .welcomeCopy h2 {
+        font-size: 30px;
+        line-height: 1.14;
+        letter-spacing: -1px;
+        margin: 11px 0 8px;
+        font-weight: 800;
+      }
+      .welcomeCopy p {
+        font-size: 13px;
+        line-height: 1.7;
+        color: #e0ddff;
+        max-width: 430px;
+      }
+      .bannerBtn {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        color: #352b9a;
+        background: #fff;
+        border: 0;
+        border-radius: 8px;
+        padding: 10px 13px;
+        margin-top: 19px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .bannerBtn:hover {
+        background: #efedff;
+      }
+      .bannerBtn .uiIcon {
+        width: 15px;
+        height: 15px;
+      }
+      .bannerBtn .uiIcon:last-child {
+        margin-left: 8px;
+      }
+      .bannerArt {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 38%;
+        min-width: 240px;
+        z-index: -1;
+      }
+      .orbit {
+        position: absolute;
+        border: 1px solid #ffffff25;
+        border-radius: 50%;
+        width: 340px;
+        height: 340px;
+        right: -25px;
+        top: -80px;
+      }
+      .orbitTwo {
+        width: 260px;
+        height: 260px;
+        right: 15px;
+        top: -40px;
+      }
+      .artTile {
+        position: absolute;
+        display: grid;
+        place-items: center;
+        border: 1px solid #ffffff55;
+        background: #ffffff20;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 16px 28px #1b155c25;
+        border-radius: 19px;
+        color: #fff;
+      }
+      .artMain {
+        width: 108px;
+        height: 108px;
+        top: 47px;
+        right: 106px;
+        transform: rotate(-10deg);
+      }
+      .artMain .uiIcon {
+        width: 47px;
+        height: 47px;
+        stroke-width: 1.4;
+      }
+      .artSmall {
+        width: 55px;
+        height: 55px;
+        top: 26px;
+        right: 44px;
+        transform: rotate(13deg);
+      }
+      .artRight {
+        width: 64px;
+        height: 64px;
+        bottom: 17px;
+        right: 31px;
+        transform: rotate(8deg);
+      }
+      .artSmall .uiIcon,
+      .artRight .uiIcon {
+        width: 27px;
+        height: 27px;
+      }
+      .sectionHeading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 13px;
+      }
+      .sectionHeading h2 {
+        font-size: 17px;
+        letter-spacing: -0.3px;
+      }
+      .sectionHeading span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .stats {
+        grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+        gap: 16px;
+        margin-bottom: 26px;
+      }
+      .stat {
+        min-height: 148px;
+        padding: 19px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+        border-radius: 14px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .stat:hover {
+        transform: translateY(-2px);
+        border-color: #cbc8ff;
+      }
+      .statIcon {
+        position: static;
+        width: 37px;
+        height: 37px;
+        border-radius: 10px;
+        margin-bottom: 12px;
+      }
+      .statIcon .uiIcon {
+        width: 20px;
+        height: 20px;
+      }
+      .stat .label {
+        font-size: 12px;
+        font-weight: 550;
+        letter-spacing: 0;
+        text-transform: none;
+        margin-bottom: 6px;
+      }
+      .stat .value {
+        font-size: 29px;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -0.9px;
+        overflow-wrap: anywhere;
+        max-width: 100%;
+      }
+      .panel {
+        border-radius: 14px;
+        box-shadow: var(--shadow-sm);
+      }
+      .panelHeader {
+        padding: 19px 21px;
+        gap: 12px;
+      }
+      .panelHeader h2 {
+        font-size: 16px;
+        font-weight: 750;
+        letter-spacing: -0.3px;
+      }
+      .panelDescription {
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .searchBox {
+        font-size: 12px;
+        border-radius: 8px;
+        padding: 10px 13px 10px 36px;
+        background-color: #f8f9fc;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='17' height='17' viewBox='0 0 24 24' fill='none' stroke='%238793a7' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='m16 16 4 4'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: 12px center;
+      }
+      .searchBox:focus {
+        background-color: #fff;
+      }
+      .searchBox:is(select) {
+        background-image: none;
+        padding-left: 12px;
+      }
+      table {
+        min-width: 650px;
+      }
+      th,
+      td {
+        padding: 13px 19px;
+        font-size: 12px;
+      }
+      th {
+        font-size: 10px;
+        letter-spacing: 0.65px;
+        background: #f7f8fb;
+        color: #6d7b90;
+        font-weight: 700;
+      }
+      td {
+        border-color: #edf0f5;
+      }
+      tr:hover td {
+        background: #f9faff;
+      }
+      .avatar {
+        width: 33px;
+        height: 33px;
+        border-radius: 10px;
+        margin-right: 9px;
+        font-size: 11px;
+      }
+      .userCell {
+        font-weight: 650;
+      }
+      .badge {
+        font-size: 10px;
+        padding: 4px 9px;
+        font-weight: 700;
+        letter-spacing: 0;
+      }
+      .loading,
+      .empty {
+        color: var(--muted);
+        font-size: 13px;
+        padding: 45px 20px;
+      }
+      .broadcastBanner {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        background: #f0efff;
+        border: 1px solid #dfdcff;
+        border-radius: 13px;
+        padding: 19px;
+        margin-bottom: 24px;
+      }
+      .broadcastIcon,
+      .composerIcon {
+        display: grid;
+        place-items: center;
+        background: #e0ddff;
+        color: var(--primary);
+        width: 43px;
+        height: 43px;
+        border-radius: 12px;
+        flex-shrink: 0;
+      }
+      .broadcastIcon .uiIcon,
+      .composerIcon .uiIcon {
+        width: 23px;
+        height: 23px;
+      }
+      .broadcastBanner h2 {
+        font-size: 14px;
+        color: #342a90;
+        letter-spacing: -0.2px;
+      }
+      .broadcastBanner p {
+        font-size: 12px;
+        line-height: 1.6;
+        color: #635c93;
+        margin-top: 3px;
+      }
+      .broadcastBanner > .btn {
+        margin-left: auto;
+        flex-shrink: 0;
+        color: var(--primary);
+        border-color: #dfdcff;
+      }
+      .modal {
+        background: #141a3866;
+        backdrop-filter: blur(5px);
+      }
+      .modalBox {
+        padding: 26px;
+        border-radius: 18px;
+        max-width: 490px;
+      }
+      .modalBox h3 {
+        font-size: 23px;
+        letter-spacing: -0.65px;
+      }
+      .modalSub {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 20px;
+      }
+      .field {
+        margin-bottom: 16px;
+      }
+      .field label {
+        font-size: 12px;
+        letter-spacing: 0;
+        text-transform: none;
+        color: var(--text-2);
+        font-weight: 650;
+      }
+      .field input,
+      .field select,
+      .field textarea,
+      .pwdRow input {
+        padding: 11px 13px;
+        font-size: 13px;
+        background: #f8f9fc;
+        border-radius: 9px;
+      }
+      .field textarea {
+        min-height: 85px;
+      }
+      .modalActions {
+        margin-top: 22px;
+        gap: 9px;
+      }
+      .modalActions button {
+        padding: 11px;
+        font-size: 13px;
+        border-radius: 9px;
+      }
+      .modalSave:disabled {
+        opacity: 0.65;
+        cursor: wait;
+      }
+      .composerTop {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+      }
+      .composerClose {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+      }
+      .composerClose .uiIcon {
+        width: 17px;
+        height: 17px;
+      }
+      .fieldCount {
+        float: right;
+        color: var(--muted-2);
+        font-size: 10px;
+        font-weight: 500;
+      }
+      .previewLabel {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--muted);
+        margin: 17px 0 8px;
+      }
+      .pushPreview {
+        border: 1px solid #e2e5ef;
+        background: #f5f6fb;
+        border-radius: 13px;
+        padding: 13px 14px;
+        overflow-wrap: anywhere;
+      }
+      .previewApp {
+        display: flex;
+        gap: 7px;
+        align-items: center;
+        font-size: 11px;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+      .previewAppIcon {
+        display: grid;
+        place-items: center;
+        color: #fff;
+        background: var(--primary);
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .previewApp span:last-child {
+        margin-left: auto;
+      }
+      .previewApp strong {
+        font-weight: 650;
+      }
+      .pushPreview #previewTitle {
+        font-size: 13px;
+        font-weight: 750;
+      }
+      .pushPreview #previewBody {
+        font-size: 12px;
+        color: var(--text-2);
+        white-space: pre-wrap;
+        margin-top: 3px;
+      }
+      .toast {
+        border-radius: 10px;
+        font-size: 13px;
+        padding: 13px 18px;
+      }
+      .chartBarFill {
+        background: linear-gradient(180deg, #8b7df9, #5147e5);
+      }
+      .activityChart {
+        overflow-x: auto;
+      }
+      .chartRow {
+        min-width: 400px;
+      }
+      .login {
+        background:
+          radial-gradient(ellipse at 12% 0%, #e6e4ff, transparent 55%), #f4f6fa;
+        padding: 30px;
+      }
+      .loginShell {
+        width: min(920px, 100%);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 24px 75px #25234d14;
+        min-height: 525px;
+      }
+      .loginBrand {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(145deg, #25215c, #5147d7 70%, #7965ed);
+        color: #fff;
+        padding: 38px;
+      }
+      .loginBrand:after {
+        content: "";
+        position: absolute;
+        width: 390px;
+        height: 390px;
+        right: -230px;
+        bottom: -160px;
+        border: 1px solid #ffffff30;
+        border-radius: 50%;
+        box-shadow:
+          0 0 0 35px #ffffff10,
+          0 0 0 70px #ffffff09;
+        pointer-events: none;
+      }
+      .loginBrandTop {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 21px;
+        font-weight: 800;
+        letter-spacing: -0.7px;
+      }
+      .loginBrandTop img {
+        background: #fff;
+        width: 39px;
+        height: 39px;
+        object-fit: contain;
+        border-radius: 10px;
+        padding: 3px;
+      }
+      .loginBrandCopy h2 {
+        font-size: 43px;
+        letter-spacing: -1.8px;
+        line-height: 1.12;
+        margin: 15px 0;
+      }
+      .loginBrandCopy p {
+        font-size: 14px;
+        color: #dedbff;
+        line-height: 1.7;
+        max-width: 310px;
+      }
+      .loginBrandFoot {
+        font-size: 11px;
+        display: flex;
+        gap: 7px;
+        align-items: center;
+        color: #d8d5ff;
+      }
+      .loginBrandFoot .uiIcon {
+        width: 15px;
+        height: 15px;
+      }
+      .loginCard {
+        max-width: none;
+        border: 0;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 44px 42px;
+        align-self: center;
+      }
+      .loginLogo {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+      }
+      .loginKicker {
+        font-size: 10px;
+        font-weight: 750;
+        letter-spacing: 1.3px;
+        color: var(--primary);
+        margin-bottom: 8px;
+      }
+      .loginCard h1 {
+        font-size: 29px;
+        letter-spacing: -1px;
+      }
+      .loginCard p {
+        font-size: 13px;
+        margin-bottom: 24px;
+      }
+      .loginCard label {
+        display: block;
+        font-size: 12px;
+        color: var(--text-2);
+        font-weight: 650;
+        margin-bottom: 7px;
+      }
+      .loginCard input {
+        padding: 12px 13px;
+        font-size: 13px;
+        border-radius: 9px;
+      }
+      .loginCard button {
+        border-radius: 9px;
+        padding: 13px;
+        font-size: 14px;
+      }
+      .mobileHeader {
+        background: #fff;
+      }
+      .menuBtn {
+        border-radius: 9px;
+      }
+      .mobileHeaderBrand {
+        font-size: 14px;
+      }
+      .sidebar.open {
+        box-shadow: 0 10px 40px #111a3530;
+      }
+      @media (min-width: 769px) and (max-width: 1150px) {
+        .stats {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .main {
+          padding-left: 24px;
+          padding-right: 24px;
+        }
+        .workspaceBar {
+          margin-left: -24px;
+          margin-right: -24px;
+          padding: 0 24px;
+        }
+        .welcomeBanner {
+          padding-left: 24px;
+        }
+        .bannerArt {
+          opacity: 0.7;
+        }
+      }
+      @media (max-width: 768px) {
+        .main {
+          padding: 20px 16px 35px;
+        }
+        .workspaceBar {
+          display: none;
+        }
+        .pageHeader {
+          gap: 12px;
+          margin-bottom: 19px;
+        }
+        .pageHeader h1 {
+          font-size: 25px;
+        }
+        .pageHeader .sub {
+          font-size: 12px;
+        }
+        .welcomeBanner {
+          min-height: 190px;
+          padding: 22px;
+          margin-bottom: 23px;
+        }
+        .welcomeCopy h2 {
+          font-size: 25px;
+        }
+        .welcomeCopy p {
+          max-width: 320px;
+        }
+        .bannerArt {
+          right: -75px;
+          opacity: 0.3;
+        }
+        .stats {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px;
+        }
+        .stat {
+          min-height: 131px;
+          padding: 14px;
+        }
+        .stat .value {
+          font-size: 25px;
+        }
+        .statIcon {
+          position: static;
+          width: 32px;
+          height: 32px;
+          margin-bottom: 10px;
+        }
+        .panelHeader {
+          padding: 15px;
+        }
+        .panelHeader h2 {
+          font-size: 15px;
+        }
+        .broadcastBanner {
+          flex-wrap: wrap;
+          padding: 15px;
+          gap: 11px;
+        }
+        .broadcastBanner > div:nth-child(2) {
+          flex: 1;
+          min-width: 180px;
+        }
+        .broadcastBanner > .btn {
+          margin-left: 0;
+          width: 100%;
+        }
+        .loginBrand {
+          display: none;
+        }
+        .loginShell {
+          display: block;
+          min-height: 0;
+          max-width: 430px;
+        }
+        .loginCard {
+          padding: 30px;
+        }
+        .login {
+          padding: 18px;
+        }
+        .modalBox {
+          padding: 21px;
+        }
+        .modal {
+          padding: 12px;
+        }
+        .sectionHeading span {
+          font-size: 11px;
+        }
+      }
+      @media (max-width: 360px) {
+        .stat .value {
+          font-size: 22px;
+        }
+        .welcomeCopy h2 {
+          font-size: 23px;
+        }
+        .bannerArt {
+          display: none;
+        }
+        .modalActions button {
+          font-size: 12px;
+        }
+        .sectionHeading span {
+          display: none;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1204,14 +2181,61 @@
 
     <!-- ═══════════════════ LOGIN ═══════════════════ -->
     <div class="login" id="loginView" style="display: none">
-      <div class="loginCard">
-        <img src="/logo.png" alt="TapCard" class="loginLogo" />
-        <h1>Admin Panel</h1>
-        <p>Sign in to manage users and content.</p>
-        <input type="text" id="nameInput" placeholder="Admin name" />
-        <input type="password" id="pwdInput" placeholder="Admin password" />
-        <button id="loginBtn" onclick="login()">Sign In</button>
-        <div class="error" id="loginError"></div>
+      <div class="loginShell">
+        <div class="loginBrand">
+          <div class="loginBrandTop">
+            <img src="/logo.png" alt="" /><span>TapCard</span>
+          </div>
+          <div class="loginBrandCopy">
+            <div class="bannerEyebrow">
+              <span class="bannerDot"></span> ADMIN CONSOLE
+            </div>
+            <h2>Everything.<br />In one place.</h2>
+            <p>
+              Manage your platform, connect with your users, and stay on top of
+              what matters.
+            </p>
+          </div>
+          <div class="loginBrandFoot">
+            <svg
+              class="uiIcon"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11zM9 12l2 2 4-4"
+              />
+            </svg>
+            Administrator access only
+          </div>
+        </div>
+        <div class="loginCard">
+          <img src="/logo.png" alt="TapCard" class="loginLogo" />
+          <div class="loginKicker">ADMIN WORKSPACE</div>
+          <h1>Welcome back</h1>
+          <p>Sign in to your TapCard admin account.</p>
+          <label for="nameInput">Admin name</label>
+          <input
+            type="text"
+            id="nameInput"
+            placeholder="Admin name"
+            autocomplete="username"
+          />
+          <label for="pwdInput">Password</label
+          ><input
+            type="password"
+            id="pwdInput"
+            placeholder="Admin password"
+            autocomplete="current-password"
+          />
+          <button id="loginBtn" onclick="login()">Sign In</button>
+          <div class="error" id="loginError" role="alert"></div>
+        </div>
       </div>
     </div>
 
@@ -1223,7 +2247,18 @@
           <span>TapCard Admin</span>
         </div>
         <button class="menuBtn" onclick="toggleSidebar()" aria-label="Menu">
-          ☰
+          <svg
+            class="uiIcon"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
         </button>
       </div>
 
@@ -1247,7 +2282,21 @@
             data-page="dashboard"
             onclick="switchPage('dashboard')"
           >
-            <span class="navIcon">📊</span
+            <span class="navIcon"
+              ><svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" /></svg></span
             ><span class="navLabel">Dashboard</span>
           </button>
           <button
@@ -1255,7 +2304,18 @@
             data-page="activity"
             onclick="switchPage('activity')"
           >
-            <span class="navIcon">📈</span
+            <span class="navIcon"
+              ><svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M3 3v18h18M7 14l4-4 4 4 6-7" /></svg></span
             ><span class="navLabel">Activity & Retention</span>
           </button>
 
@@ -1265,10 +2325,42 @@
             data-page="users"
             onclick="switchPage('users')"
           >
-            <span class="navIcon">👥</span><span class="navLabel">Users</span>
+            <span class="navIcon"
+              ><svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"
+                />
+                <circle cx="9" cy="7" r="4" /></svg></span
+            ><span class="navLabel">Users</span>
           </button>
           <button class="navItem" data-page="qrs" onclick="switchPage('qrs')">
-            <span class="navIcon">▤</span><span class="navLabel">QR Codes</span>
+            <span class="navIcon"
+              ><svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="3" width="6" height="6" rx="1" />
+                <rect x="15" y="3" width="6" height="6" rx="1" />
+                <rect x="3" y="15" width="6" height="6" rx="1" />
+                <path
+                  d="M15 15h3v3h3v3h-6zM12 3v3M3 12h3M12 12h3M21 12v2"
+                /></svg></span
+            ><span class="navLabel">QR Codes</span>
           </button>
 
           <div class="navGroupLabel">Engagement</div>
@@ -1277,7 +2369,20 @@
             data-page="streaks"
             onclick="switchPage('streaks')"
           >
-            <span class="navIcon">🔥</span
+            <span class="navIcon"
+              ><svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M12 22c-4.4 0-7-3-7-7 0-3 2-6 4-8 0 3 2 4 3 4 2-3 2-7 1-9 4 3 6 7 6 12 0 5-3 8-7 8z"
+                /></svg></span
             ><span class="navLabel">Streaks & Rewards</span>
           </button>
           <button
@@ -1285,7 +2390,22 @@
             data-page="spins"
             onclick="switchPage('spins')"
           >
-            <span class="navIcon">🎡</span
+            <span class="navIcon"
+              ><svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="9" />
+                <circle cx="12" cy="12" r="2" />
+                <path
+                  d="M12 3v7M12 14v7M3 12h7M14 12h7M5.6 5.6l5 5M13.4 13.4l5 5M5.6 18.4l5-5M13.4 10.6l5-5"
+                /></svg></span
             ><span class="navLabel">Daily Spins</span>
           </button>
           <button
@@ -1293,7 +2413,20 @@
             data-page="earnings"
             onclick="switchPage('earnings')"
           >
-            <span class="navIcon">💰</span
+            <span class="navIcon"
+              ><svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="5" width="18" height="14" rx="3" />
+                <circle cx="12" cy="12" r="3" />
+                <path d="M6 12h.01M18 12h.01" /></svg></span
             ><span class="navLabel">Earnings</span>
           </button>
           <button
@@ -1301,7 +2434,20 @@
             data-page="achievements"
             onclick="switchPage('achievements')"
           >
-            <span class="navIcon">🏆</span
+            <span class="navIcon"
+              ><svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M8 21h8M12 17v4M7 3h10v7a5 5 0 0 1-10 0zM7 5H4v3a4 4 0 0 0 3 4M17 5h3v3a4 4 0 0 1-3 4"
+                /></svg></span
             ><span class="navLabel">Achievements</span>
           </button>
 
@@ -1311,21 +2457,60 @@
             data-page="notes"
             onclick="switchPage('notes')"
           >
-            <span class="navIcon">📝</span><span class="navLabel">Notes</span>
+            <span class="navIcon"
+              ><svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM14 3v5h5M8 12h7M8 16h7"
+                /></svg></span
+            ><span class="navLabel">Notes</span>
           </button>
           <button
             class="navItem"
             data-page="tasks"
             onclick="switchPage('tasks')"
           >
-            <span class="navIcon">✅</span><span class="navLabel">Tasks</span>
+            <span class="navIcon"
+              ><svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="4" />
+                <path d="m7 12 3 3 7-7" /></svg></span
+            ><span class="navLabel">Tasks</span>
           </button>
           <button
             class="navItem"
             data-page="reminders"
             onclick="switchPage('reminders')"
           >
-            <span class="navIcon">🔔</span
+            <span class="navIcon"
+              ><svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5l3 2" /></svg></span
             ><span class="navLabel">Reminders</span>
           </button>
 
@@ -1335,14 +2520,39 @@
             data-page="notifications"
             onclick="switchPage('notifications')"
           >
-            <span class="navIcon">🔔</span
+            <span class="navIcon"
+              ><svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"
+                /></svg></span
             ><span class="navLabel">Notifications</span
             ><span class="navBadge" id="notifBadge" style="display: none"
               >0</span
             >
           </button>
           <button class="navItem" data-page="push" onclick="switchPage('push')">
-            <span class="navIcon">📲</span
+            <span class="navIcon"
+              ><svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="6" y="2" width="12" height="20" rx="3" />
+                <path d="M10 18h4m-4-9 2-2 2 2m-2-2v7" /></svg></span
             ><span class="navLabel">Push Notifications</span>
           </button>
           <button
@@ -1350,7 +2560,21 @@
             data-page="support"
             onclick="switchPage('support')"
           >
-            <span class="navIcon">💬</span><span class="navLabel">Support</span>
+            <span class="navIcon"
+              ><svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M21 11a8 8 0 0 1-8 8H5l-3 3v-9a9 9 0 0 1 9-10h2a8 8 0 0 1 8 8zM7 10h10M7 14h6"
+                /></svg></span
+            ><span class="navLabel">Support</span>
           </button>
         </nav>
 
@@ -1363,12 +2587,52 @@
             </div>
           </div>
           <button class="navItem" onclick="logout()">
-            <span class="navIcon">🚪</span><span class="navLabel">Log Out</span>
+            <span class="navIcon"
+              ><svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M10 17l5-5-5-5M15 12H3M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"
+                /></svg></span
+            ><span class="navLabel">Log Out</span>
           </button>
         </div>
       </aside>
 
       <main class="main">
+        <header class="workspaceBar">
+          <div class="breadcrumb">
+            <span>Workspace</span><span class="crumbSlash">/</span
+            ><strong id="currentPageLabel">Dashboard</strong>
+          </div>
+          <div class="workspaceRight">
+            <span class="workspaceDate" id="workspaceDate"></span
+            ><span class="adminPill"
+              ><svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11zM9 12l2 2 4-4"
+                />
+              </svg>
+              Admin workspace</span
+            >
+          </div>
+        </header>
         <!-- Dashboard -->
         <section id="page-dashboard">
           <div class="pageHeader">
@@ -1378,21 +2642,156 @@
             </div>
             <div class="pageHeaderActions">
               <button class="btn btn-ghost" onclick="loadAll()">
-                ↻ Refresh
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20 7v5h-5M4 17v-5h5M6 7a7 7 0 0 1 12-1l2 6M4 12l2 6a7 7 0 0 0 12-1"
+                  />
+                </svg>
+                Refresh
               </button>
               <button class="btn btn-primary" onclick="openCreateUser()">
-                + New User
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                New User
               </button>
             </div>
           </div>
 
+          <div class="welcomeBanner">
+            <div class="welcomeCopy">
+              <div class="bannerEyebrow">
+                <span class="bannerDot"></span> YOUR COMMAND CENTER
+              </div>
+              <h2>Welcome to TapCard.</h2>
+              <p>
+                Manage your users, monitor engagement and keep your community
+                connected.
+              </p>
+              <button class="bannerBtn" onclick="switchPage('push')">
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m22 2-7 20-4-9-9-4 20-7zM22 2 11 13" />
+                </svg>
+                Send a push notification
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14m-6-6 6 6-6 6" />
+                </svg>
+              </button>
+            </div>
+            <div class="bannerArt" aria-hidden="true">
+              <div class="orbit orbitOne"></div>
+              <div class="orbit orbitTwo"></div>
+              <div class="artTile artSmall">
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"
+                  />
+                  <circle cx="9" cy="7" r="4" />
+                </svg>
+              </div>
+              <div class="artTile artMain">
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                  <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                  <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                  <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                </svg>
+              </div>
+              <div class="artTile artRight">
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 3v18h18M7 14l4-4 4 4 6-7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="sectionHeading">
+            <h2>Overview</h2>
+            <span>Key platform metrics</span>
+          </div>
           <div class="stats">
             <div class="stat">
               <div
                 class="statIcon"
                 style="background: var(--primary-soft); color: var(--primary)"
               >
-                👥
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"
+                  />
+                  <circle cx="9" cy="7" r="4" />
+                </svg>
               </div>
               <div class="label">Total Users</div>
               <div class="value" id="statUsers">–</div>
@@ -1402,7 +2801,21 @@
                 class="statIcon"
                 style="background: var(--success-soft); color: var(--success)"
               >
-                ▤
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="3" width="6" height="6" rx="1" />
+                  <rect x="15" y="3" width="6" height="6" rx="1" />
+                  <rect x="3" y="15" width="6" height="6" rx="1" />
+                  <path d="M15 15h3v3h3v3h-6zM12 3v3M3 12h3M12 12h3M21 12v2" />
+                </svg>
               </div>
               <div class="label">QR Codes</div>
               <div class="value" id="statQRs">–</div>
@@ -1412,7 +2825,20 @@
                 class="statIcon"
                 style="background: var(--warning-soft); color: var(--warning)"
               >
-                💰
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="5" width="18" height="14" rx="3" />
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M6 12h.01M18 12h.01" />
+                </svg>
               </div>
               <div class="label">Credits Issued</div>
               <div class="value" id="statCredits">–</div>
@@ -1422,7 +2848,18 @@
                 class="statIcon"
                 style="background: var(--purple-soft); color: var(--purple)"
               >
-                🔥
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 3v18h18M7 14l4-4 4 4 6-7" />
+                </svg>
               </div>
               <div class="label">Active Today</div>
               <div class="value" id="statActive">–</div>
@@ -1430,7 +2867,30 @@
           </div>
 
           <div class="panel">
-            <div class="panelHeader"><h2>Recent Users</h2></div>
+            <div class="panelHeader">
+              <div>
+                <h2>Recent users</h2>
+                <p class="panelDescription">Latest registered accounts</p>
+              </div>
+              <button
+                class="btn btn-ghost btn-sm"
+                onclick="switchPage('users')"
+              >
+                View all users
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M5 12h14m-6-6 6 6-6 6" />
+                </svg>
+              </button>
+            </div>
             <div id="recentUsersLoading" class="loading">Loading…</div>
             <div id="recentUsers" class="tableWrap"></div>
           </div>
@@ -1445,7 +2905,19 @@
             </div>
             <div class="pageHeaderActions">
               <button class="btn btn-primary" onclick="openCreateUser()">
-                + New User
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                New User
               </button>
             </div>
           </div>
@@ -1487,7 +2959,21 @@
             </div>
             <div class="pageHeaderActions">
               <button class="btn btn-ghost" onclick="loadQRs()">
-                ↻ Refresh
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20 7v5h-5M4 17v-5h5M6 7a7 7 0 0 1 12-1l2 6M4 12l2 6a7 7 0 0 0 12-1"
+                  />
+                </svg>
+                Refresh
               </button>
             </div>
           </div>
@@ -1547,11 +3033,25 @@
           <div class="pageHeader">
             <div>
               <h1>Push Notifications</h1>
-              <div class="sub">Send real-time alerts via Firebase</div>
+              <div class="sub">
+                Reach your community with real-time Firebase notifications.
+              </div>
             </div>
             <div class="pageHeaderActions">
               <button class="btn btn-primary" onclick="openPushComposer()">
-                + New Push
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m22 2-7 20-4-9-9-4 20-7zM22 2 11 13" />
+                </svg>
+                Send to All Users
               </button>
             </div>
           </div>
@@ -1561,7 +3061,19 @@
                 class="statIcon"
                 style="background: var(--success-soft); color: var(--success)"
               >
-                📲
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="6" y="2" width="12" height="20" rx="3" />
+                  <path d="M10 18h4m-4-9 2-2 2 2m-2-2v7" />
+                </svg>
               </div>
               <div class="label">Devices with Token</div>
               <div class="value" id="pushTokenCount">–</div>
@@ -1571,15 +3083,72 @@
                 class="statIcon"
                 style="background: var(--warning-soft); color: var(--warning)"
               >
-                👥
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"
+                  />
+                  <circle cx="9" cy="7" r="4" />
+                </svg>
               </div>
               <div class="label">Total Users</div>
               <div class="value" id="pushUserCount">–</div>
             </div>
           </div>
+          <div class="broadcastBanner">
+            <div class="broadcastIcon">
+              <svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m22 2-7 20-4-9-9-4 20-7zM22 2 11 13" />
+              </svg>
+            </div>
+            <div>
+              <h2>One message. Every eligible device.</h2>
+              <p>
+                Broadcast an announcement to users with a valid FCM token, or
+                send a targeted notification from the table below.
+              </p>
+            </div>
+            <button class="btn btn-ghost" onclick="openPushComposer()">
+              Compose broadcast
+              <svg
+                class="uiIcon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M5 12h14m-6-6 6 6-6 6" />
+              </svg>
+            </button>
+          </div>
           <div class="panel">
             <div class="panelHeader">
-              <h2>Users &amp; Tokens</h2>
+              <div>
+                <h2>Users &amp; Tokens</h2>
+                <p class="panelDescription">
+                  Manage devices and send individual alerts
+                </p>
+              </div>
               <input
                 class="searchBox"
                 placeholder="Search by name, email, or token…"
@@ -1625,7 +3194,21 @@
                 <option value="resolved">Resolved</option>
               </select>
               <button class="btn btn-ghost" onclick="loadSupportTickets()">
-                ↻ Refresh
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20 7v5h-5M4 17v-5h5M6 7a7 7 0 0 1 12-1l2 6M4 12l2 6a7 7 0 0 0 12-1"
+                  />
+                </svg>
+                Refresh
               </button>
             </div>
           </div>
@@ -1641,7 +3224,21 @@
             </div>
             <div class="pageHeaderActions">
               <button class="btn btn-ghost" onclick="loadStreaks()">
-                ↻ Refresh
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20 7v5h-5M4 17v-5h5M6 7a7 7 0 0 1 12-1l2 6M4 12l2 6a7 7 0 0 0 12-1"
+                  />
+                </svg>
+                Refresh
               </button>
             </div>
           </div>
@@ -1651,7 +3248,18 @@
                 class="statIcon"
                 style="background: var(--warning-soft); color: var(--warning)"
               >
-                🔥
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 3v18h18M7 14l4-4 4 4 6-7" />
+                </svg>
               </div>
               <div class="label">Active Today</div>
               <div class="value" id="statActiveToday">–</div>
@@ -1661,7 +3269,19 @@
                 class="statIcon"
                 style="background: var(--primary-soft); color: var(--primary)"
               >
-                📅
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="5" width="18" height="16" rx="2" />
+                  <path d="M16 3v4M8 3v4M3 10h18" />
+                </svg>
               </div>
               <div class="label">Active This Week</div>
               <div class="value" id="statActiveWeek">–</div>
@@ -1671,7 +3291,19 @@
                 class="statIcon"
                 style="background: var(--success-soft); color: var(--success)"
               >
-                ✅
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="4" />
+                  <path d="m7 12 3 3 7-7" />
+                </svg>
               </div>
               <div class="label">Total Check-Ins</div>
               <div class="value" id="statTotalCheckIns">–</div>
@@ -1707,7 +3339,21 @@
             </div>
             <div class="pageHeaderActions">
               <button class="btn btn-ghost" onclick="loadSpins()">
-                ↻ Refresh
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20 7v5h-5M4 17v-5h5M6 7a7 7 0 0 1 12-1l2 6M4 12l2 6a7 7 0 0 0 12-1"
+                  />
+                </svg>
+                Refresh
               </button>
             </div>
           </div>
@@ -1717,7 +3363,18 @@
                 class="statIcon"
                 style="background: var(--warning-soft); color: var(--warning)"
               >
-                🎰
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 3v18h18M7 14l4-4 4 4 6-7" />
+                </svg>
               </div>
               <div class="label">Spins Today</div>
               <div class="value" id="spinStatToday">–</div>
@@ -1727,7 +3384,19 @@
                 class="statIcon"
                 style="background: var(--primary-soft); color: var(--primary)"
               >
-                📅
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="5" width="18" height="16" rx="2" />
+                  <path d="M16 3v4M8 3v4M3 10h18" />
+                </svg>
               </div>
               <div class="label">Spins This Week</div>
               <div class="value" id="spinStatWeek">–</div>
@@ -1737,7 +3406,20 @@
                 class="statIcon"
                 style="background: var(--purple-soft); color: var(--purple)"
               >
-                💰
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="5" width="18" height="14" rx="3" />
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M6 12h.01M18 12h.01" />
+                </svg>
               </div>
               <div class="label">Credits Won</div>
               <div class="value" id="spinStatCredits">–</div>
@@ -1747,7 +3429,18 @@
                 class="statIcon"
                 style="background: var(--success-soft); color: var(--success)"
               >
-                🎯
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 3v18h18M7 14l4-4 4 4 6-7" />
+                </svg>
               </div>
               <div class="label">Win Rate</div>
               <div class="value" id="spinStatWinRate">–</div>
@@ -1782,7 +3475,21 @@
             </div>
             <div class="pageHeaderActions">
               <button class="btn btn-ghost" onclick="loadNotes()">
-                ↻ Refresh
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20 7v5h-5M4 17v-5h5M6 7a7 7 0 0 1 12-1l2 6M4 12l2 6a7 7 0 0 0 12-1"
+                  />
+                </svg>
+                Refresh
               </button>
             </div>
           </div>
@@ -1792,7 +3499,20 @@
                 class="statIcon"
                 style="background: var(--primary-soft); color: var(--primary)"
               >
-                📝
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM14 3v5h5M8 12h7M8 16h7"
+                  />
+                </svg>
               </div>
               <div class="label">Total Notes</div>
               <div class="value" id="notesTotal">–</div>
@@ -1802,7 +3522,21 @@
                 class="statIcon"
                 style="background: var(--success-soft); color: var(--success)"
               >
-                👥
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"
+                  />
+                  <circle cx="9" cy="7" r="4" />
+                </svg>
               </div>
               <div class="label">Unique Users</div>
               <div class="value" id="notesUsers">–</div>
@@ -1812,7 +3546,18 @@
                 class="statIcon"
                 style="background: var(--warning-soft); color: var(--warning)"
               >
-                ✨
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 3v18h18M7 14l4-4 4 4 6-7" />
+                </svg>
               </div>
               <div class="label">Notes Today</div>
               <div class="value" id="notesToday">–</div>
@@ -1847,7 +3592,21 @@
             </div>
             <div class="pageHeaderActions">
               <button class="btn btn-ghost" onclick="loadTasks()">
-                ↻ Refresh
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20 7v5h-5M4 17v-5h5M6 7a7 7 0 0 1 12-1l2 6M4 12l2 6a7 7 0 0 0 12-1"
+                  />
+                </svg>
+                Refresh
               </button>
             </div>
           </div>
@@ -1857,7 +3616,19 @@
                 class="statIcon"
                 style="background: var(--primary-soft); color: var(--primary)"
               >
-                ✅
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="4" />
+                  <path d="m7 12 3 3 7-7" />
+                </svg>
               </div>
               <div class="label">Total Tasks</div>
               <div class="value" id="tasksTotal">–</div>
@@ -1867,7 +3638,18 @@
                 class="statIcon"
                 style="background: var(--success-soft); color: var(--success)"
               >
-                🎯
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 3v18h18M7 14l4-4 4 4 6-7" />
+                </svg>
               </div>
               <div class="label">Completed</div>
               <div class="value" id="tasksCompleted">–</div>
@@ -1877,7 +3659,18 @@
                 class="statIcon"
                 style="background: var(--warning-soft); color: var(--warning)"
               >
-                📈
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 3v18h18M7 14l4-4 4 4 6-7" />
+                </svg>
               </div>
               <div class="label">Completion Rate</div>
               <div class="value" id="tasksRate">–</div>
@@ -1887,7 +3680,21 @@
                 class="statIcon"
                 style="background: var(--purple-soft); color: var(--purple)"
               >
-                👥
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"
+                  />
+                  <circle cx="9" cy="7" r="4" />
+                </svg>
               </div>
               <div class="label">Unique Users</div>
               <div class="value" id="tasksUsers">–</div>
@@ -1922,7 +3729,21 @@
             </div>
             <div class="pageHeaderActions">
               <button class="btn btn-ghost" onclick="loadReminders()">
-                ↻ Refresh
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20 7v5h-5M4 17v-5h5M6 7a7 7 0 0 1 12-1l2 6M4 12l2 6a7 7 0 0 0 12-1"
+                  />
+                </svg>
+                Refresh
               </button>
             </div>
           </div>
@@ -1932,7 +3753,20 @@
                 class="statIcon"
                 style="background: var(--primary-soft); color: var(--primary)"
               >
-                🔔
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"
+                  />
+                </svg>
               </div>
               <div class="label">Total Reminders</div>
               <div class="value" id="remTotal">–</div>
@@ -1942,7 +3776,19 @@
                 class="statIcon"
                 style="background: var(--success-soft); color: var(--success)"
               >
-                ✅
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="3" width="18" height="18" rx="4" />
+                  <path d="m7 12 3 3 7-7" />
+                </svg>
               </div>
               <div class="label">Active</div>
               <div class="value" id="remActive">–</div>
@@ -1952,7 +3798,19 @@
                 class="statIcon"
                 style="background: var(--warning-soft); color: var(--warning)"
               >
-                📅
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="5" width="18" height="16" rx="2" />
+                  <path d="M16 3v4M8 3v4M3 10h18" />
+                </svg>
               </div>
               <div class="label">Upcoming</div>
               <div class="value" id="remUpcoming">–</div>
@@ -1962,7 +3820,21 @@
                 class="statIcon"
                 style="background: var(--purple-soft); color: var(--purple)"
               >
-                👥
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"
+                  />
+                  <circle cx="9" cy="7" r="4" />
+                </svg>
               </div>
               <div class="label">Unique Users</div>
               <div class="value" id="remUsers">–</div>
@@ -1997,7 +3869,21 @@
             </div>
             <div class="pageHeaderActions">
               <button class="btn btn-ghost" onclick="loadEarnings()">
-                ↻ Refresh
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20 7v5h-5M4 17v-5h5M6 7a7 7 0 0 1 12-1l2 6M4 12l2 6a7 7 0 0 0 12-1"
+                  />
+                </svg>
+                Refresh
               </button>
             </div>
           </div>
@@ -2007,7 +3893,20 @@
                 class="statIcon"
                 style="background: var(--primary-soft); color: var(--primary)"
               >
-                💰
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="5" width="18" height="14" rx="3" />
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M6 12h.01M18 12h.01" />
+                </svg>
               </div>
               <div class="label">Lifetime Credits</div>
               <div class="value" id="earnLifetime">–</div>
@@ -2017,7 +3916,18 @@
                 class="statIcon"
                 style="background: var(--success-soft); color: var(--success)"
               >
-                📈
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 3v18h18M7 14l4-4 4 4 6-7" />
+                </svg>
               </div>
               <div class="label">Credits Today</div>
               <div class="value" id="earnToday">–</div>
@@ -2027,7 +3937,21 @@
                 class="statIcon"
                 style="background: var(--warning-soft); color: var(--warning)"
               >
-                👥
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"
+                  />
+                  <circle cx="9" cy="7" r="4" />
+                </svg>
               </div>
               <div class="label">Users Earning</div>
               <div class="value" id="earnUsers">–</div>
@@ -2037,7 +3961,20 @@
                 class="statIcon"
                 style="background: var(--purple-soft); color: var(--purple)"
               >
-                🏆
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M8 21h8M12 17v4M7 3h10v7a5 5 0 0 1-10 0zM7 5H4v3a4 4 0 0 0 3 4M17 5h3v3a4 4 0 0 1-3 4"
+                  />
+                </svg>
               </div>
               <div class="label">Top Earner</div>
               <div class="value" id="earnTop">–</div>
@@ -2049,7 +3986,20 @@
                 class="statIcon"
                 style="background: var(--warning-soft); color: var(--warning)"
               >
-                🔥
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M12 22c-4.4 0-7-3-7-7 0-3 2-6 4-8 0 3 2 4 3 4 2-3 2-7 1-9 4 3 6 7 6 12 0 5-3 8-7 8z"
+                  />
+                </svg>
               </div>
               <div class="label">From Streaks</div>
               <div class="value" id="earnStreak">–</div>
@@ -2059,7 +4009,22 @@
                 class="statIcon"
                 style="background: var(--purple-soft); color: var(--purple)"
               >
-                🎡
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <circle cx="12" cy="12" r="2" />
+                  <path
+                    d="M12 3v7M12 14v7M3 12h7M14 12h7M5.6 5.6l5 5M13.4 13.4l5 5M5.6 18.4l5-5M13.4 10.6l5-5"
+                  />
+                </svg>
               </div>
               <div class="label">From Spins</div>
               <div class="value" id="earnSpin">–</div>
@@ -2069,7 +4034,20 @@
                 class="statIcon"
                 style="background: var(--success-soft); color: var(--success)"
               >
-                🏆
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M8 21h8M12 17v4M7 3h10v7a5 5 0 0 1-10 0zM7 5H4v3a4 4 0 0 0 3 4M17 5h3v3a4 4 0 0 1-3 4"
+                  />
+                </svg>
               </div>
               <div class="label">From Achievements</div>
               <div class="value" id="earnAch">–</div>
@@ -2102,7 +4080,21 @@
             </div>
             <div class="pageHeaderActions">
               <button class="btn btn-ghost" onclick="loadAchievements()">
-                ↻ Refresh
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20 7v5h-5M4 17v-5h5M6 7a7 7 0 0 1 12-1l2 6M4 12l2 6a7 7 0 0 0 12-1"
+                  />
+                </svg>
+                Refresh
               </button>
             </div>
           </div>
@@ -2112,7 +4104,20 @@
                 class="statIcon"
                 style="background: var(--warning-soft); color: var(--warning)"
               >
-                🏆
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M8 21h8M12 17v4M7 3h10v7a5 5 0 0 1-10 0zM7 5H4v3a4 4 0 0 0 3 4M17 5h3v3a4 4 0 0 1-3 4"
+                  />
+                </svg>
               </div>
               <div class="label">Total Unlocks</div>
               <div class="value" id="achTotal">–</div>
@@ -2122,7 +4127,21 @@
                 class="statIcon"
                 style="background: var(--primary-soft); color: var(--primary)"
               >
-                👥
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"
+                  />
+                  <circle cx="9" cy="7" r="4" />
+                </svg>
               </div>
               <div class="label">Users With Badges</div>
               <div class="value" id="achUsers">–</div>
@@ -2132,7 +4151,18 @@
                 class="statIcon"
                 style="background: var(--success-soft); color: var(--success)"
               >
-                📚
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 3v18h18M7 14l4-4 4 4 6-7" />
+                </svg>
               </div>
               <div class="label">Total Badges</div>
               <div class="value" id="achCount">–</div>
@@ -2142,7 +4172,18 @@
                 class="statIcon"
                 style="background: var(--purple-soft); color: var(--purple)"
               >
-                🎯
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 3v18h18M7 14l4-4 4 4 6-7" />
+                </svg>
               </div>
               <div class="label">Top Badge</div>
               <div class="value" id="achTop" style="font-size: 20px">–</div>
@@ -2179,7 +4220,21 @@
             </div>
             <div class="pageHeaderActions">
               <button class="btn btn-ghost" onclick="loadActivity()">
-                ↻ Refresh
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M20 7v5h-5M4 17v-5h5M6 7a7 7 0 0 1 12-1l2 6M4 12l2 6a7 7 0 0 0 12-1"
+                  />
+                </svg>
+                Refresh
               </button>
             </div>
           </div>
@@ -2189,7 +4244,18 @@
                 class="statIcon"
                 style="background: var(--primary-soft); color: var(--primary)"
               >
-                📅
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M3 3v18h18M7 14l4-4 4 4 6-7" />
+                </svg>
               </div>
               <div class="label">DAU</div>
               <div class="value" id="actDau">–</div>
@@ -2199,7 +4265,19 @@
                 class="statIcon"
                 style="background: var(--success-soft); color: var(--success)"
               >
-                📈
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="5" width="18" height="16" rx="2" />
+                  <path d="M16 3v4M8 3v4M3 10h18" />
+                </svg>
               </div>
               <div class="label">WAU</div>
               <div class="value" id="actWau">–</div>
@@ -2209,7 +4287,21 @@
                 class="statIcon"
                 style="background: var(--warning-soft); color: var(--warning)"
               >
-                🎯
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"
+                  />
+                  <circle cx="9" cy="7" r="4" />
+                </svg>
               </div>
               <div class="label">MAU</div>
               <div class="value" id="actMau">–</div>
@@ -2219,7 +4311,20 @@
                 class="statIcon"
                 style="background: var(--purple-soft); color: var(--purple)"
               >
-                🔥
+                <svg
+                  class="uiIcon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M12 22c-4.4 0-7-3-7-7 0-3 2-6 4-8 0 3 2 4 3 4 2-3 2-7 1-9 4 3 6 7 6 12 0 5-3 8-7 8z"
+                  />
+                </svg>
               </div>
               <div class="label">Stickiness</div>
               <div class="value" id="actStick">–</div>
@@ -2401,25 +4506,75 @@
     <!-- Push Modal -->
     <div class="modal" id="pushModal">
       <div class="modalBox">
+        <div class="composerTop">
+          <div class="composerIcon">
+            <svg
+              class="uiIcon"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m22 2-7 20-4-9-9-4 20-7zM22 2 11 13" />
+            </svg>
+          </div>
+          <button
+            class="iconBtn composerClose"
+            type="button"
+            onclick="closeModal('pushModal')"
+            aria-label="Close notification composer"
+          >
+            <svg
+              class="uiIcon"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m6 6 12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
         <h3>Send Push Notification</h3>
         <p class="modalSub" id="pushRecipient"></p>
         <div class="field">
-          <label>Title</label
+          <label for="pTitle"
+            >Title
+            <span class="fieldCount" id="pushTitleCount">0 / 60</span></label
           ><input id="pTitle" placeholder="Important update!" maxlength="60" />
         </div>
         <div class="field">
-          <label>Message</label
+          <label for="pBody"
+            >Message
+            <span class="fieldCount" id="pushBodyCount">0 / 200</span></label
           ><textarea
             id="pBody"
             placeholder="Write your message…"
             maxlength="200"
           ></textarea>
         </div>
+        <div class="previewLabel">Notification preview</div>
+        <div class="pushPreview">
+          <div class="previewApp">
+            <span class="previewAppIcon">T</span><strong>TapCard</strong
+            ><span>now</span>
+          </div>
+          <div id="previewTitle">Your notification title</div>
+          <div id="previewBody">Your message will appear here.</div>
+        </div>
         <div class="modalActions">
           <button class="modalCancel" onclick="closeModal('pushModal')">
             Cancel
           </button>
-          <button class="modalSave" onclick="sendPush()">Send Push</button>
+          <button class="modalSave" id="pushSendBtn" onclick="sendPush()">
+            Send Push
+          </button>
         </div>
       </div>
     </div>
@@ -2427,7 +4582,7 @@
     <div class="toast" id="toast"></div>
 
     <script>
-      // ALL OF YOUR EXISTING JAVASCRIPT GOES HERE (I did not change any of your JS)
+      // TapCard admin API and client-side interactions
       const API = "https://tapcardss-api.netlify.app/.netlify/functions/admin";
       let adminToken = "";
       let allUsers = [];
@@ -2456,6 +4611,12 @@
             day: "numeric",
           });
 
+        document.getElementById("workspaceDate").textContent =
+          new Date().toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          });
         const saved = localStorage.getItem("adminToken");
         const savedName = localStorage.getItem("adminName");
 
@@ -2585,6 +4746,10 @@
           el.classList.toggle("active", el.dataset.page === page);
         });
         closeSidebar();
+        document.getElementById("currentPageLabel").textContent =
+          document.querySelector(`#page-${page} h1`)?.textContent ||
+          "Dashboard";
+        window.scrollTo(0, 0);
 
         const loaders = {
           dashboard: loadStats,
@@ -2877,6 +5042,8 @@
         const body = document.getElementById("pushBody");
 
         if (!users.length) {
+          table.style.display = "none";
+          body.innerHTML = "";
           document.getElementById("pushLoading").style.display = "block";
           document.getElementById("pushLoading").textContent = "No users found";
           return;
@@ -2920,11 +5087,15 @@
 
       function openPushComposer() {
         pushTargetUserId = null;
+        document.getElementById("pushSendBtn").textContent =
+          "Send to All Users";
         document.getElementById("pushRecipient").textContent =
           "Broadcast — will send to all users with a valid FCM token.";
         document.getElementById("pTitle").value = "";
         document.getElementById("pBody").value = "";
+        updatePushPreview();
         document.getElementById("pushModal").classList.add("open");
+        document.getElementById("pTitle").focus();
       }
 
       function openPushForUser(userId) {
@@ -2935,12 +5106,34 @@
           return;
         }
         pushTargetUserId = userId;
+        document.getElementById("pushSendBtn").textContent = "Send Push";
         document.getElementById("pushRecipient").textContent =
           `To: ${u.name || u.email}`;
         document.getElementById("pTitle").value = "";
         document.getElementById("pBody").value = "";
+        updatePushPreview();
         document.getElementById("pushModal").classList.add("open");
+        document.getElementById("pTitle").focus();
       }
+
+      function updatePushPreview() {
+        const title = document.getElementById("pTitle").value;
+        const body = document.getElementById("pBody").value;
+        document.getElementById("pushTitleCount").textContent =
+          `${title.length} / 60`;
+        document.getElementById("pushBodyCount").textContent =
+          `${body.length} / 200`;
+        document.getElementById("previewTitle").textContent =
+          title.trim() || "Your notification title";
+        document.getElementById("previewBody").textContent =
+          body.trim() || "Your message will appear here.";
+      }
+      document
+        .getElementById("pTitle")
+        .addEventListener("input", updatePushPreview);
+      document
+        .getElementById("pBody")
+        .addEventListener("input", updatePushPreview);
 
       async function sendPush() {
         const title = document.getElementById("pTitle").value.trim();
@@ -2950,11 +5143,24 @@
           return;
         }
 
+        const sendBtn = document.getElementById("pushSendBtn");
+        if (sendBtn.disabled) return;
+        const targetUserId = pushTargetUserId;
+        if (
+          !targetUserId &&
+          !confirm(
+            "Send this notification to all users with a valid FCM token?",
+          )
+        )
+          return;
+        const originalLabel = sendBtn.textContent;
+        sendBtn.disabled = true;
+        sendBtn.textContent = "Sending…";
         try {
-          const payload = pushTargetUserId
+          const payload = targetUserId
             ? {
                 action: "sendPushNotification",
-                userId: pushTargetUserId,
+                userId: targetUserId,
                 title,
                 body,
               }
@@ -2971,7 +5177,7 @@
           if (!res.ok) throw new Error(data.error || "Send failed");
           closeModal("pushModal");
           toast(
-            pushTargetUserId
+            targetUserId
               ? "Push sent"
               : `Sent to ${data.sent} device${data.sent === 1 ? "" : "s"}`,
             "success",
@@ -2979,6 +5185,9 @@
           loadPush();
         } catch (e) {
           toast(e.message, "error");
+        } finally {
+          sendBtn.disabled = false;
+          sendBtn.textContent = originalLabel;
         }
       }
 
@@ -3646,6 +5855,19 @@
         });
       });
 
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          const modal = document.querySelector(".modal.open");
+          if (modal) closeModal(modal.id);
+          else closeSidebar();
+        }
+        if (
+          event.key === "Enter" &&
+          ["nameInput", "pwdInput"].includes(document.activeElement?.id) &&
+          !document.getElementById("loginBtn").disabled
+        )
+          login();
+      });
       // ─── Utilities ──────────────────────────────────
       function initials(str) {
         if (!str) return "?";
